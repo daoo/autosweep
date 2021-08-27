@@ -66,12 +66,12 @@ void Board::PartitionCell(int row, int col, std::vector<Cell> &unknowns,
                           std::vector<Cell> &flags) const {
   if (row < 0 || row >= _rows)
     return;
-  if (col < 0 || col > _cols)
+  if (col < 0 || col >= _cols)
     return;
   Cell cell = at(row, col);
   if (cell.IsUnknown())
     unknowns.push_back(cell);
-  if (cell.IsFlag())
+  else if (cell.IsFlag())
     flags.push_back(cell);
 }
 
