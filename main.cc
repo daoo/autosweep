@@ -12,8 +12,8 @@ int main() {
   int x2 = 1351;
   int y2 = 432;
   Desktop desktop(x1, y1, x2 - x1, y2 - y1);
-  cv::Mat image;
 
+  cv::Mat image;
   desktop.Capture(image);
   // cv::imwrite("image.bmp", image);
 
@@ -36,6 +36,7 @@ int main() {
     // TODO: Unify X_OFFSET, Y_OFFSET
     // plus 8 for clicking in middle
     Cell cell = *iter;
+    printf("LeftClick(%d, %d) %d\n", cell.Row, cell.Col, cell.Value);
     desktop.LeftClick(8 + x1 + 10 + cell.Col * 16, 8 + y1 + 52 + cell.Row * 16);
   }
 

@@ -36,7 +36,7 @@ public:
     int dx = -event.xbutton.x + x;
     int dy = -event.xbutton.y + y;
     XWarpPointer(_display, None, None, 0, 0, 0, 0, dx, dy);
-    usleep(100);
+    usleep(100000);
   }
 
   void Click(int button) {
@@ -57,14 +57,14 @@ public:
     if (XSendEvent(_display, PointerWindow, True, ButtonPressMask, &event) == 0)
       fprintf(stderr, "Error to send the event!\n");
     XFlush(_display);
-    usleep(100);
+    usleep(100000);
     // Release
     event.type = ButtonRelease;
     if (XSendEvent(_display, PointerWindow, True, ButtonReleaseMask, &event) ==
         0)
       fprintf(stderr, "Error to send the event!\n");
     XFlush(_display);
-    usleep(100);
+    usleep(100000);
   }
 
   void RightClick(int x, int y) {
