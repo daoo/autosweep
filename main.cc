@@ -13,7 +13,7 @@ const int Y1 = 114;
 const int X2 = 1351;
 const int Y2 = 432;
 
-bool ComputeAndClick(const Desktop& desktop, const Board &board) {
+bool ComputeAndClick(const Desktop &desktop, const Board &board) {
   std::unordered_set<Cell> new_flags, new_clicks;
   Changes(board, new_flags, new_clicks);
   if (new_flags.empty() && new_clicks.empty())
@@ -49,12 +49,28 @@ int main() {
   /* cv::imwrite("image.bmp", image); */
   /* image = cv::imread("image.bmp"); */
 
-  while (true) {
+  {
     cv::Mat image;
     desktop.Capture(image);
     Board board = Board::FromScreenshot(image);
     std::cout << board;
-    ComputeAndClick(desktop, board);
+
+    if (board.IsEmpty()) {
+      int center_x = X1 + 8 + 10 + board.cols() * 16 / 2;
+      int center_y = Y1 + 8 + 52 + board.rows() * 16 / 2;
+      std::cout << "LeftClick(" << center_x << ", " << center_y << ")\n";
+      desktop.LeftClick(center_x, center_y);
+    }
+  }
+
+  while (true) {
+    cv::Mat image;
+    desktop.Capture(image);
+    Board board = Board::FromScreenshot(image);
+    std::cout << '\n' << board;
+    if (!ComputeAndClick(desktop, board)) {
+      break;
+    }
   }
 
   /* cv::imshow("image", image); */

@@ -18,6 +18,16 @@ public:
   int rows() const { return cells_.rows; }
   int cols() const { return cells_.cols; }
 
+  bool IsEmpty() const {
+    for (int i = 0; i < rows(); ++i) {
+      for (int j = 0; j < cols(); ++j) {
+        if (!at(i, j).IsUnknown())
+          return false;
+      }
+    }
+    return true;
+  }
+
   Cell at(int row, int col) const {
     return Cell{row, col, cells_.at<uint8_t>(row, col)};
   }
