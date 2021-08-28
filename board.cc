@@ -109,7 +109,7 @@ void Changes(const Board &board, std::unordered_set<Cell> &new_flags,
       std::vector<Cell> unknown_neighbors;
       std::vector<Cell> flagged_neighbors;
       PartitionNeighbors(board, row, col, unknown_neighbors, flagged_neighbors);
-      if (cell.IsKnown()) {
+      if (cell.IsNumber()) {
         if (cell.value == flagged_neighbors.size()) {
           std::copy(unknown_neighbors.cbegin(), unknown_neighbors.cend(),
                     std::inserter(new_clicks, new_clicks.end()));

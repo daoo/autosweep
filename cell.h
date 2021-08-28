@@ -10,8 +10,9 @@ struct Cell {
 
   bool IsFlag() const { return value == CELL_FLAG; }
   bool IsUnknown() const { return value == CELL_UNKNOWN; }
-  bool IsNumber() const { return value >= 0 && value <= 9; }
-  bool IsKnown() const { return IsNumber() || IsFlag(); }
+  bool IsZero() const { return value == 0; }
+  bool IsNumber() const { return value >= 1 && value <= 9; }
+  bool IsKnown() const { return IsZero() || IsNumber() || IsFlag(); }
 
   char ToChar() const {
     switch (value) {
