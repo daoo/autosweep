@@ -23,7 +23,7 @@ public:
     _window = DefaultRootWindow(_display);
   }
 
-  void Capture(cv::Mat &mat) {
+  void Capture(cv::Mat &mat) const {
     XImage *image = XGetImage(_display, _window, _x, _y, _width, _height,
                               AllPlanes, ZPixmap);
     // Could hold the XImage in a separate capture object with clean up
@@ -32,7 +32,7 @@ public:
     XDestroyImage(image);
   }
 
-  void Move(int x, int y) {
+  void Move(int x, int y) const {
     XEvent event;
     XQueryPointer(_display, _window, &event.xbutton.root, &event.xbutton.window,
                   &event.xbutton.x_root, &event.xbutton.y_root,
@@ -43,7 +43,7 @@ public:
     usleep(DELAY_AFTER_MOVE);
   }
 
-  void Click(int button) {
+  void Click(int button) const {
     XEvent event;
     memset(&event, 0, sizeof(event));
     event.xbutton.button = button;
@@ -71,12 +71,12 @@ public:
     usleep(DELAY_AFTER_CLICK);
   }
 
-  void LeftClick(int x, int y) {
+  void LeftClick(int x, int y) const {
     Move(x, y);
     Click(Button1);
   }
 
-  void RightClick(int x, int y) {
+  void RightClick(int x, int y) const {
     Move(x, y);
     Click(Button3);
   }
