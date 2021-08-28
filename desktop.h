@@ -6,7 +6,9 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 
-const int DELAY = 10000;
+const int DELAY_AFTER_CLICK = 40000;
+const int DELAY_AFTER_MOVE = 1;
+const int DELAY_BETWEEN_PRESS_AND_RELEASE = 1;
 
 class Desktop {
 private:
@@ -38,7 +40,7 @@ public:
     int dx = -event.xbutton.x + x;
     int dy = -event.xbutton.y + y;
     XWarpPointer(_display, None, None, 0, 0, 0, 0, dx, dy);
-    usleep(DELAY);
+    usleep(DELAY_AFTER_MOVE);
   }
 
   void Click(int button) {
@@ -59,26 +61,24 @@ public:
     if (XSendEvent(_display, PointerWindow, True, ButtonPressMask, &event) == 0)
       std::cerr << "Error to send the event!\n";
     XFlush(_display);
-    usleep(DELAY);
+    usleep(DELAY_BETWEEN_PRESS_AND_RELEASE);
     // Release
     event.type = ButtonRelease;
     if (XSendEvent(_display, PointerWindow, True, ButtonReleaseMask, &event) ==
         0)
       std::cerr << "Error to send the event!\n";
     XFlush(_display);
-    usleep(DELAY);
-  }
-
-  void RightClick(int x, int y) {
-    std::cout << "RightClick(" << x << ", " << y << ")\n";
-    Move(x, y);
-    Click(Button3);
+    usleep(DELAY_AFTER_CLICK);
   }
 
   void LeftClick(int x, int y) {
-    std::cout << "LeftClick(" << x << ", " << y << ")\n";
     Move(x, y);
     Click(Button1);
+  }
+
+  void RightClick(int x, int y) {
+    Move(x, y);
+    Click(Button3);
   }
 
   ~Desktop() { XCloseDisplay(_display); }
