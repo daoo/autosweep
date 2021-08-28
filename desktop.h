@@ -6,7 +6,7 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 
-const int DELAY_AFTER_CLICK = 40000;
+const int DELAY_AFTER_CLICK = 50000;
 const int DELAY_AFTER_MOVE = 1;
 const int DELAY_BETWEEN_PRESS_AND_RELEASE = 1;
 
