@@ -1,10 +1,12 @@
 #include <opencv4/opencv2/opencv.hpp>
-#include <stdio.h>
+
+#include <iostream>
 #include <unordered_set>
 #include <vector>
 
 #include "board.h"
 #include "desktop.h"
+#include "stream.h"
 
 int main() {
   int x1 = 851;
@@ -20,7 +22,7 @@ int main() {
   /* image = cv::imread("image.bmp"); */
 
   Board board(image);
-  board.Printf();
+  std::cout << board;
 
   std::unordered_set<Cell> new_flags, new_clicks;
   board.Changes(new_flags, new_clicks);
@@ -28,16 +30,21 @@ int main() {
     Cell cell = *iter;
     // TODO: Unify X_OFFSET, Y_OFFSET
     // plus 8 for clicking in middle
-    printf("RightClick(%d, %d) %d\n", cell.Row, cell.Col, cell.Value);
-    desktop.RightClick(8 + x1 + 10 + cell.Col * 16,
-                       8 + y1 + 52 + cell.Row * 16);
+    std::cout << "RightClick(" << cell.row << ", " << cell.col << ") "
+              << cell.value << '\n';
+    int x = 8 + x1 + 10 + cell.col * 16;
+    int y = 8 + y1 + 52 + cell.row * 16;
+    desktop.RightClick(x, y);
   }
   for (auto iter = new_clicks.cbegin(); iter != new_clicks.cend(); ++iter) {
     // TODO: Unify X_OFFSET, Y_OFFSET
     // plus 8 for clicking in middle
     Cell cell = *iter;
-    printf("LeftClick(%d, %d) %d\n", cell.Row, cell.Col, cell.Value);
-    desktop.LeftClick(8 + x1 + 10 + cell.Col * 16, 8 + y1 + 52 + cell.Row * 16);
+    std::cout << "LeftClick(" << cell.row << ", " << cell.col << ") "
+              << cell.value << '\n';
+    int x = 8 + x1 + 10 + cell.col * 16;
+    int y = 8 + y1 + 52 + cell.row * 16;
+    desktop.LeftClick(x, y);
   }
 
   /* cv::imshow("image", image); */

@@ -5,46 +5,48 @@ const uint8_t CELL_UNKNOWN = 255;
 const uint8_t CELL_FLAG = 254;
 
 struct Cell {
-  int Row, Col;
-  uint8_t Value;
+  int row, col;
+  uint8_t value;
 
-  bool IsFlag() const { return Value == CELL_FLAG; }
-  bool IsUnknown() const { return Value == CELL_UNKNOWN; }
+  bool IsFlag() const { return value == CELL_FLAG; }
+  bool IsUnknown() const { return value == CELL_UNKNOWN; }
   bool IsKnown() const {
-    return (Value >= 0 && Value <= 9) || Value == CELL_FLAG;
+    return (value >= 0 && value <= 9) || value == CELL_FLAG;
   }
 
-  char ToChar() {
-    if (Value == CELL_UNKNOWN)
+  char ToChar() const {
+    switch (value) {
+    case CELL_UNKNOWN:
       return '-';
-    if (Value == CELL_FLAG)
+    case CELL_FLAG:
       return 'f';
-    if (Value == 0)
+    case 0:
       return '0';
-    if (Value == 1)
+    case 1:
       return '1';
-    if (Value == 2)
+    case 2:
       return '2';
-    if (Value == 3)
+    case 3:
       return '3';
-    if (Value == 4)
+    case 4:
       return '4';
-    if (Value == 5)
+    case 5:
       return '5';
-    if (Value == 6)
+    case 6:
       return '6';
-    if (Value == 7)
+    case 7:
       return '7';
-    if (Value == 8)
+    case 8:
       return '8';
-    if (Value == 9)
+    case 9:
       return '9';
+    }
 
     return 'e';
   }
 
   bool operator==(const Cell &other) const {
-    return (Row == other.Row && Col == other.Col && Value == other.Value);
+    return (row == other.row && col == other.col && value == other.value);
   }
 };
 
@@ -56,8 +58,8 @@ template <> struct hash<Cell> {
     using std::size_t;
     using std::string;
 
-    return ((hash<int>()(cell.Row) ^ (hash<int>()(cell.Col) << 1)) >> 1) ^
-           (hash<uint8_t>()(cell.Value) << 1);
+    return ((hash<int>()(cell.row) ^ (hash<int>()(cell.col) << 1)) >> 1) ^
+           (hash<uint8_t>()(cell.value) << 1);
   }
 };
 

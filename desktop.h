@@ -57,26 +57,26 @@ public:
     // Press
     event.type = ButtonPress;
     if (XSendEvent(_display, PointerWindow, True, ButtonPressMask, &event) == 0)
-      fprintf(stderr, "Error to send the event!\n");
+      std::cerr << "Error to send the event!\n";
     XFlush(_display);
     usleep(DELAY);
     // Release
     event.type = ButtonRelease;
     if (XSendEvent(_display, PointerWindow, True, ButtonReleaseMask, &event) ==
         0)
-      fprintf(stderr, "Error to send the event!\n");
+      std::cerr << "Error to send the event!\n";
     XFlush(_display);
     usleep(DELAY);
   }
 
   void RightClick(int x, int y) {
-    printf("RightClick(%d, %d)\n", x, y);
+    std::cout << "RightClick(" << x << ", " << y << ")\n";
     Move(x, y);
     Click(Button3);
   }
 
   void LeftClick(int x, int y) {
-    printf("LeftClick(%d, %d)\n", x, y);
+    std::cout << "LeftClick(" << x << ", " << y << ")\n";
     Move(x, y);
     Click(Button1);
   }
