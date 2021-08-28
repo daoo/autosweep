@@ -21,7 +21,7 @@ int main() {
 
   /* image = cv::imread("image.bmp"); */
 
-  Board board(image);
+  Board board = Board::FromScreenshot(image);
   std::cout << board;
 
   std::unordered_set<Cell> new_flags, new_clicks;

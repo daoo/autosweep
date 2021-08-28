@@ -9,22 +9,24 @@
 
 class Board {
 private:
-  int rows_ = 16;
-  int cols_ = 30;
   cv::Mat cells_;
+  Board(cv::Mat cells);
 
 public:
-  Board(cv::Mat screenshot);
+  static Board FromScreenshot(cv::Mat screenshot);
 
-  int rows() const { return rows_; }
-  int cols() const { return cols_; }
+  int rows() const { return cells_.rows; }
+  int cols() const { return cells_.cols; }
 
   Cell at(int row, int col) const {
     return Cell{row, col, cells_.at<uint8_t>(row, col)};
   }
+
+  friend Board Probabilities(const Board &board);
 };
 
 void Changes(const Board &board, std::unordered_set<Cell> &new_flags,
              std::unordered_set<Cell> &new_clicks);
 
+Board Probabilities(const Board &board);
 #endif // AUTOSWEEP_BOARD_H_

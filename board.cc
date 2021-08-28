@@ -36,21 +36,27 @@ uint8_t ParseCell(const cv::Mat &cell) {
   return 0;
 }
 
-Board::Board(cv::Mat screenshot) : cells_(rows_, cols_, CV_8UC1) {
+Board::Board(cv::Mat cells) : cells_(cells) {}
+
+Board Board::FromScreenshot(cv::Mat screenshot) {
+  const int ROWS = 16;
+  const int COLS = 30;
   const int X_OFFSET = 10;
   const int Y_OFFSET = 52;
   const int CELL_WIDTH = 16;
   const int CELL_HEIGHT = 16;
-  for (int i = 0; i < cols_; ++i) {
+  cv::Mat cells(ROWS, COLS, CV_8UC1);
+  for (int i = 0; i < COLS; ++i) {
     int x1 = X_OFFSET + i * CELL_WIDTH;
     int x2 = x1 + CELL_WIDTH;
-    for (int j = 0; j < rows_; ++j) {
+    for (int j = 0; j < ROWS; ++j) {
       int y1 = Y_OFFSET + j * CELL_HEIGHT;
       int y2 = y1 + CELL_HEIGHT;
       cv::Mat cell = screenshot(cv::Range(y1, y2), cv::Range(x1, x2));
-      cells_.at<uint8_t>(j, i) = ParseCell(cell);
+      cells.at<uint8_t>(j, i) = ParseCell(cell);
     }
   }
+  return Board(cells);
 }
 
 void PartitionCell(const Board &board, int row, int col,
