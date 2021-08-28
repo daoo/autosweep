@@ -6,6 +6,8 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 
+const int DELAY = 10000;
+
 class Desktop {
 private:
   Display *_display;
@@ -36,7 +38,7 @@ public:
     int dx = -event.xbutton.x + x;
     int dy = -event.xbutton.y + y;
     XWarpPointer(_display, None, None, 0, 0, 0, 0, dx, dy);
-    usleep(100000);
+    usleep(DELAY);
   }
 
   void Click(int button) {
@@ -57,14 +59,14 @@ public:
     if (XSendEvent(_display, PointerWindow, True, ButtonPressMask, &event) == 0)
       fprintf(stderr, "Error to send the event!\n");
     XFlush(_display);
-    usleep(100000);
+    usleep(DELAY);
     // Release
     event.type = ButtonRelease;
     if (XSendEvent(_display, PointerWindow, True, ButtonReleaseMask, &event) ==
         0)
       fprintf(stderr, "Error to send the event!\n");
     XFlush(_display);
-    usleep(100000);
+    usleep(DELAY);
   }
 
   void RightClick(int x, int y) {
