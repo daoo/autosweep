@@ -53,29 +53,29 @@ Board::Board(cv::Mat screenshot) : cells_(rows_, cols_, CV_8UC1) {
   }
 }
 
-void Board::PartitionCell(int row, int col, std::vector<Cell> &unknowns,
-                          std::vector<Cell> &flags) const {
-  if (row < 0 || row >= rows_)
+void PartitionCell(const Board &board, int row, int col,
+                   std::vector<Cell> &unknowns, std::vector<Cell> &flags) {
+  if (row < 0 || row >= board.rows())
     return;
-  if (col < 0 || col >= cols_)
+  if (col < 0 || col >= board.cols())
     return;
-  Cell cell = at(row, col);
+  Cell cell = board.at(row, col);
   if (cell.IsUnknown())
     unknowns.push_back(cell);
   else if (cell.IsFlag())
     flags.push_back(cell);
 }
 
-void Board::PartitionNeighbors(int row, int col, std::vector<Cell> &unknowns,
-                               std::vector<Cell> &flags) const {
-  PartitionCell(row - 1, col - 1, unknowns, flags);
-  PartitionCell(row - 1, col + 0, unknowns, flags);
-  PartitionCell(row - 1, col + 1, unknowns, flags);
-  PartitionCell(row + 0, col + 1, unknowns, flags);
-  PartitionCell(row + 1, col + 1, unknowns, flags);
-  PartitionCell(row + 1, col + 0, unknowns, flags);
-  PartitionCell(row + 1, col - 1, unknowns, flags);
-  PartitionCell(row + 0, col - 1, unknowns, flags);
+void PartitionNeighbors(const Board &board, int row, int col,
+                        std::vector<Cell> &unknowns, std::vector<Cell> &flags) {
+  PartitionCell(board, row - 1, col - 1, unknowns, flags);
+  PartitionCell(board, row - 1, col + 0, unknowns, flags);
+  PartitionCell(board, row - 1, col + 1, unknowns, flags);
+  PartitionCell(board, row + 0, col + 1, unknowns, flags);
+  PartitionCell(board, row + 1, col + 1, unknowns, flags);
+  PartitionCell(board, row + 1, col + 0, unknowns, flags);
+  PartitionCell(board, row + 1, col - 1, unknowns, flags);
+  PartitionCell(board, row + 0, col - 1, unknowns, flags);
 }
 
 // Algorithm:
@@ -92,14 +92,14 @@ void Board::PartitionNeighbors(int row, int col, std::vector<Cell> &unknowns,
 // If the number of unknown neighbors plus the number of neighboring flags is
 // equal to the cell's number, the neighbors can be flagged.
 // If the cell is satisified, all unknown neighbors can be clicked.
-void Board::Changes(std::unordered_set<Cell> &new_flags,
-                    std::unordered_set<Cell> &new_clicks) const {
-  for (int row = 0; row < rows_; ++row) {
-    for (int col = 0; col < cols_; ++col) {
-      Cell cell = at(row, col);
+void Changes(const Board &board, std::unordered_set<Cell> &new_flags,
+             std::unordered_set<Cell> &new_clicks) {
+  for (int row = 0; row < board.rows(); ++row) {
+    for (int col = 0; col < board.cols(); ++col) {
+      Cell cell = board.at(row, col);
       std::vector<Cell> unknown_neighbors;
       std::vector<Cell> flagged_neighbors;
-      PartitionNeighbors(row, col, unknown_neighbors, flagged_neighbors);
+      PartitionNeighbors(board, row, col, unknown_neighbors, flagged_neighbors);
       if (cell.IsKnown()) {
         if (cell.value == flagged_neighbors.size()) {
           std::copy(unknown_neighbors.cbegin(), unknown_neighbors.cend(),

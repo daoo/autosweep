@@ -25,7 +25,7 @@ int main() {
   std::cout << board;
 
   std::unordered_set<Cell> new_flags, new_clicks;
-  board.Changes(new_flags, new_clicks);
+  Changes(board, new_flags, new_clicks);
   for (auto iter = new_flags.cbegin(); iter != new_flags.cend(); ++iter) {
     Cell cell = *iter;
     // TODO: Unify X_OFFSET, Y_OFFSET
