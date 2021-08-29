@@ -10,11 +10,11 @@
 class Board {
 private:
   cv::Mat cells_;
-  Board(cv::Mat cells);
+  Board(const cv::Mat& cells);
 
 public:
-  static Board FromScreenshot(cv::Mat screenshot);
-  static Board FromString(std::string string);
+  static Board FromScreenshot(const cv::Mat& screenshot);
+  static Board FromString(const std::string& string);
 
   int rows() const { return cells_.rows; }
   int cols() const { return cells_.cols; }
@@ -32,12 +32,10 @@ public:
   Cell at(int row, int col) const {
     return Cell{row, col, cells_.at<uint8_t>(row, col)};
   }
-
-  friend Board Probabilities(const Board &board);
 };
 
 void Changes(const Board &board, std::unordered_set<Cell> &new_flags,
              std::unordered_set<Cell> &new_clicks);
 
-Board Probabilities(const Board &board);
+Cell ACellWithMostNeighboringMines(const Board &board);
 #endif // AUTOSWEEP_BOARD_H_

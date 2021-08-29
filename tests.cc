@@ -17,7 +17,18 @@ void Test1() {
   assert(new_clicks.empty());
 }
 
+void Test2() {
+  Board board = Board::FromString("--1\n"
+                                  "--2\n"
+                                  "12f\n");
+
+  Cell cell = ACellWithMostNeighboringMines(board);
+
+  assert(cell.row == 1 && cell.col == 1);
+}
+
 int main() {
   Test1();
+  Test2();
   return 0;
 }

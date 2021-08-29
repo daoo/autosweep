@@ -2,7 +2,7 @@
 
 #include <opencv4/opencv2/opencv.hpp>
 
-uint8_t ParseCell(const cv::Mat &cell) {
+uchar ParseCell(const cv::Mat &cell) {
   cv::Scalar color = cv::mean(cell);
 
   cv::Scalar unknown_color(189, 189, 189);
@@ -39,9 +39,9 @@ uint8_t ParseCell(const cv::Mat &cell) {
   return 0;
 }
 
-Board::Board(cv::Mat cells) : cells_(cells) {}
+Board::Board(const cv::Mat &cells) : cells_(cells) {}
 
-Board Board::FromScreenshot(cv::Mat screenshot) {
+Board Board::FromScreenshot(const cv::Mat &screenshot) {
   const int ROWS = 16;
   const int COLS = 30;
   const int X_OFFSET = 10;
@@ -56,13 +56,13 @@ Board Board::FromScreenshot(cv::Mat screenshot) {
       int y1 = Y_OFFSET + j * CELL_HEIGHT;
       int y2 = y1 + CELL_HEIGHT;
       cv::Mat cell = screenshot(cv::Range(y1, y2), cv::Range(x1, x2));
-      cells.at<uint8_t>(j, i) = ParseCell(cell);
+      cells.at<uchar>(j, i) = ParseCell(cell);
     }
   }
   return Board(cells);
 }
 
-Board Board::FromString(std::string string) {
+Board Board::FromString(const std::string &string) {
   // Find size
   int rows = 0;
   int cols = 0;
@@ -82,7 +82,7 @@ Board Board::FromString(std::string string) {
   for (int i = 0; i < rows; ++i) {
     for (int j = 0; j < cols; ++j) {
       char c = string.at(i * (cols + 1) + j);
-      cells.at<uint8_t>(i, j) = Cell::FromChar(c);
+      cells.at<uchar>(i, j) = Cell::FromChar(c);
     }
   }
   return Board(cells);
@@ -147,4 +147,51 @@ void Changes(const Board &board, std::unordered_set<Cell> &new_flags,
       }
     }
   }
+}
+
+int Aoeu(const cv::Mat &board, int row, int col) {
+  if (row < 0 || row >= board.rows)
+    return 0;
+  if (col < 0 || col >= board.cols)
+    return 0;
+  uchar cell = board.at<uchar>(row, col);
+  return cell >= 1 && cell <= 9 ? cell : 0;
+}
+
+int NeighboringExpectedMineCount(const cv::Mat &board, int row, int col) {
+  return Aoeu(board, row - 1, col - 1) + Aoeu(board, row - 1, col + 0) +
+         Aoeu(board, row - 1, col + 1) + Aoeu(board, row + 0, col + 1) +
+         Aoeu(board, row + 1, col + 1) + Aoeu(board, row + 1, col + 0) +
+         Aoeu(board, row + 1, col - 1) + Aoeu(board, row + 0, col - 1);
+}
+
+Cell ACellWithMostNeighboringMines(const Board &board) {
+  cv::Mat recounted(board.rows(), board.cols(), CV_8UC1);
+  for (int row = 0; row < board.rows(); ++row) {
+    for (int col = 0; col < board.cols(); ++col) {
+      Cell cell = board.at(row, col);
+      std::vector<Cell> unknown_neighbors;
+      std::vector<Cell> flagged_neighbors;
+      PartitionNeighbors(board, row, col, unknown_neighbors, flagged_neighbors);
+      recounted.at<uchar>(row, col) =
+          cell.IsNumber() ? cell.value - flagged_neighbors.size() : cell.value;
+    }
+  }
+
+  int storedRow = -1;
+  int storedCol = -1;
+  int storedCount = 0;
+  for (int row = 0; row < board.rows(); ++row) {
+    for (int col = 0; col < board.cols(); ++col) {
+      if (board.at(row, col).IsUnknown()) {
+        int count = NeighboringExpectedMineCount(recounted, row, col);
+        if (count > storedCount) {
+          storedRow = row;
+          storedCol = col;
+          storedCount = count;
+        }
+      }
+    }
+  }
+  return Cell{storedRow, storedCol, CELL_UNKNOWN};
 }

@@ -13,33 +13,37 @@ const int Y1 = 114;
 const int X2 = 1351;
 const int Y2 = 432;
 
+void LeftClick(const Desktop &desktop, Cell cell) {
+  std::cout << "LeftClick(" << cell.row << ", " << cell.col << ") "
+            << cell.value << '\n';
+  // TODO: Unify X_OFFSET, Y_OFFSET
+  // plus 8 for clicking in middle
+  int x = 8 + X1 + 10 + cell.col * 16;
+  int y = 8 + Y1 + 52 + cell.row * 16;
+  desktop.LeftClick(x, y);
+}
+
+void RightClick(const Desktop &desktop, Cell cell) {
+  // TODO: Unify X_OFFSET, Y_OFFSET
+  // plus 8 for clicking in middle
+  std::cout << "RightClick(" << cell.row << ", " << cell.col << ") "
+            << cell.value << '\n';
+  int x = 8 + X1 + 10 + cell.col * 16;
+  int y = 8 + Y1 + 52 + cell.row * 16;
+  desktop.RightClick(x, y);
+}
+
 bool ComputeAndClick(const Desktop &desktop, const Board &board) {
   std::unordered_set<Cell> new_flags, new_clicks;
   Changes(board, new_flags, new_clicks);
   if (new_flags.empty() && new_clicks.empty())
     return false;
 
-  for (auto iter = new_flags.cbegin(); iter != new_flags.cend(); ++iter) {
-    Cell cell = *iter;
-    // TODO: Unify X_OFFSET, Y_OFFSET
-    // plus 8 for clicking in middle
-    std::cout << "RightClick(" << cell.row << ", " << cell.col << ") "
-              << cell.value << '\n';
-    int x = 8 + X1 + 10 + cell.col * 16;
-    int y = 8 + Y1 + 52 + cell.row * 16;
-    desktop.RightClick(x, y);
-  }
+  for (auto iter = new_flags.cbegin(); iter != new_flags.cend(); ++iter)
+    RightClick(desktop, *iter);
+  for (auto iter = new_clicks.cbegin(); iter != new_clicks.cend(); ++iter)
+    LeftClick(desktop, *iter);
 
-  for (auto iter = new_clicks.cbegin(); iter != new_clicks.cend(); ++iter) {
-    // TODO: Unify X_OFFSET, Y_OFFSET
-    // plus 8 for clicking in middle
-    Cell cell = *iter;
-    std::cout << "LeftClick(" << cell.row << ", " << cell.col << ") "
-              << cell.value << '\n';
-    int x = 8 + X1 + 10 + cell.col * 16;
-    int y = 8 + Y1 + 52 + cell.row * 16;
-    desktop.LeftClick(x, y);
-  }
   return true;
 }
 
@@ -69,7 +73,9 @@ int main() {
     Board board = Board::FromScreenshot(image);
     std::cout << '\n' << board;
     if (!ComputeAndClick(desktop, board)) {
-      break;
+      Cell cell = ACellWithMostNeighboringMines(board);
+      std::cout << "Guessing cell " << cell.row << " x " << cell.col << '\n';
+      LeftClick(desktop, cell);
     }
   }
 
