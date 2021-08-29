@@ -50,9 +50,6 @@ bool ComputeAndClick(const Desktop &desktop, const Board &board) {
 int main() {
   Desktop desktop(X1, Y1, X2 - X1, Y2 - Y1);
 
-  /* cv::imwrite("image.bmp", image); */
-  /* image = cv::imread("image.bmp"); */
-
   {
     cv::Mat image;
     desktop.Capture(image);
@@ -79,10 +76,4 @@ int main() {
       RightClick(desktop, cell);
     }
   }
-
-  /* cv::imshow("image", image); */
-  /* char k; */
-  /* do { */
-  /*   k = cv::waitKey(100); */
-  /* } while (k != 'q'); */
 }
