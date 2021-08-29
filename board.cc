@@ -62,6 +62,32 @@ Board Board::FromScreenshot(cv::Mat screenshot) {
   return Board(cells);
 }
 
+Board Board::FromString(std::string string) {
+  // Find size
+  int rows = 0;
+  int cols = 0;
+  size_t prevpos = 0;
+  size_t pos = 0;
+  while ((pos = string.find('\n', pos + 1)) != std::string::npos) {
+    int thiscol = pos - prevpos;
+    if (cols > 0 && thiscol != cols) {
+      throw std::runtime_error("FromString() error");
+    }
+    cols = thiscol;
+    prevpos = pos + 1;
+    ++rows;
+  }
+
+  cv::Mat cells(rows, cols, CV_8UC1);
+  for (int i = 0; i < rows; ++i) {
+    for (int j = 0; j < cols; ++j) {
+      char c = string.at(i * (cols + 1) + j);
+      cells.at<uint8_t>(i, j) = Cell::FromChar(c);
+    }
+  }
+  return Board(cells);
+}
+
 void PartitionCell(const Board &board, int row, int col,
                    std::vector<Cell> &unknowns, std::vector<Cell> &flags) {
   if (row < 0 || row >= board.rows())

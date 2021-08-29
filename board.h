@@ -14,6 +14,7 @@ private:
 
 public:
   static Board FromScreenshot(cv::Mat screenshot);
+  static Board FromString(std::string string);
 
   int rows() const { return cells_.rows; }
   int cols() const { return cells_.cols; }

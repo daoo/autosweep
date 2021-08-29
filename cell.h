@@ -14,6 +14,37 @@ struct Cell {
   bool IsNumber() const { return value >= 1 && value <= 9; }
   bool IsKnown() const { return IsZero() || IsNumber() || IsFlag(); }
 
+  static uint8_t FromChar(char character) {
+    switch (character) {
+    case '-':
+      return CELL_UNKNOWN;
+    case 'f':
+      return CELL_FLAG;
+    case '0':
+      return 0;
+    case '1':
+      return 1;
+    case '2':
+      return 2;
+    case '3':
+      return 3;
+    case '4':
+      return 4;
+    case '5':
+      return 5;
+    case '6':
+      return 6;
+    case '7':
+      return 7;
+    case '8':
+      return 8;
+    case '9':
+      return 9;
+    }
+
+    throw std::runtime_error("FromChar() error");
+  }
+
   char ToChar() const {
     switch (value) {
     case CELL_UNKNOWN:
