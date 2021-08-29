@@ -14,6 +14,8 @@ uchar ParseCell(const cv::Mat &cell) {
   cv::Scalar four_color(166.570312, 139.664062, 139.664062);
   cv::Scalar five_color(129.328125, 129.328125, 162.960938);
   cv::Scalar six_color(162.445312, 162.445312, 127.851562);
+  cv::Scalar seven_color(148.523438, 148.523438, 148.523438);
+  cv::Scalar eight_color(161.414062, 161.414062, 161.414062);
 
   if (cv::norm(color, unknown_color) < 0.1)
     return CELL_UNKNOWN;
@@ -33,6 +35,10 @@ uchar ParseCell(const cv::Mat &cell) {
     return 5;
   if (cv::norm(color, six_color) < 0.1)
     return 6;
+  if (cv::norm(color, seven_color) < 0.1)
+    return 7;
+  if (cv::norm(color, eight_color) < 0.1)
+    return 8;
 
   printf("unknown color: %f, %f, %f\n", color[0], color[1], color[2]);
   exit(1);
