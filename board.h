@@ -38,4 +38,5 @@ void Changes(const Board &board, std::unordered_set<Cell> &new_flags,
              std::unordered_set<Cell> &new_clicks);
 
 Cell ACellWithMostNeighboringMines(const Board &board);
+
 #endif // AUTOSWEEP_BOARD_H_

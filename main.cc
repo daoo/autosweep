@@ -54,13 +54,10 @@ int main() {
     cv::Mat image;
     desktop.Capture(image);
     Board board = Board::FromScreenshot(image);
-    std::cout << board;
 
     if (board.IsEmpty()) {
-      int center_x = X1 + 8 + 10 + board.cols() * 16 / 2;
-      int center_y = Y1 + 8 + 52 + board.rows() * 16 / 2;
-      std::cout << "LeftClick(" << center_x << ", " << center_y << ")\n";
-      desktop.LeftClick(center_x, center_y);
+      std::cout << "Board empty, clicking middle.\n";
+      LeftClick(desktop, board.at(board.rows() / 2, board.cols() / 2));
     }
   }
 
@@ -68,11 +65,9 @@ int main() {
     cv::Mat image;
     desktop.Capture(image);
     Board board = Board::FromScreenshot(image);
-    std::cout << '\n' << board;
     if (!ComputeAndClick(desktop, board)) {
       Cell cell = ACellWithMostNeighboringMines(board);
-      std::cout << "Guessing there is mine at cell " << cell.row << " x "
-                << cell.col << '\n';
+      std::cout << "No 100% moves found, guessing.\n";
       RightClick(desktop, cell);
     }
   }
