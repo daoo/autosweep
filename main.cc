@@ -74,8 +74,9 @@ int main() {
     std::cout << '\n' << board;
     if (!ComputeAndClick(desktop, board)) {
       Cell cell = ACellWithMostNeighboringMines(board);
-      std::cout << "Guessing cell " << cell.row << " x " << cell.col << '\n';
-      LeftClick(desktop, cell);
+      std::cout << "Guessing there is mine at cell " << cell.row << " x "
+                << cell.col << '\n';
+      RightClick(desktop, cell);
     }
   }
 
