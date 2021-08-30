@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+CXX="clang++" CXXFLAGS="-W -Wall -g -fsanitize=address,undefined" \
+  meson "out_debug"
+
+CXX="clang++" CXXFLAGS="-O2 -march=native -DNDEBUG" \
+  meson "out_release"
