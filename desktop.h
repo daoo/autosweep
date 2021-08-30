@@ -21,12 +21,23 @@ public:
     _window = DefaultRootWindow(_display);
   }
 
-  cv::Mat Capture(int x, int y, int width, int height) const {
+  cv::Rect GetDisplayRectangle() const {
+    int screen = DefaultScreen(_display);
+    int width = DisplayWidth(_display, screen);
+    int height = DisplayHeight(_display, screen);
+    return {0, 0, width, height};
+  }
+
+  cv::Mat Capture(const cv::Rect &rectangle) const {
     XImage *image =
-        XGetImage(_display, _window, x, y, width, height, AllPlanes, ZPixmap);
-    cv::Mat mat = cv::Mat(height, width, CV_8UC4, image->data).clone();
+        XGetImage(_display, _window, rectangle.x, rectangle.y, rectangle.width,
+                  rectangle.height, AllPlanes, ZPixmap);
+    cv::Mat bgra =
+        cv::Mat(rectangle.height, rectangle.width, CV_8UC4, image->data);
+    cv::Mat bgr;
+    cv::cvtColor(bgra, bgr, cv::COLOR_BGRA2BGR);
     XDestroyImage(image);
-    return mat;
+    return bgr;
   }
 
   void Move(int x, int y) const {

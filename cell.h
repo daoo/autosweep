@@ -1,6 +1,8 @@
 #ifndef AUTOSWEEP_CELL_H_
 #define AUTOSWEEP_CELL_H_
 
+#include <functional>
+
 const uint8_t CELL_UNKNOWN = 255;
 const uint8_t CELL_FLAG = 254;
 

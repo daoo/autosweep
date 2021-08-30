@@ -3,18 +3,16 @@
 
 #include <opencv4/opencv2/core/mat.hpp>
 #include <unordered_set>
-#include <vector>
 
 #include "cell.h"
 
 class Board {
 private:
   cv::Mat cells_;
-  explicit Board(const cv::Mat& cells);
 
 public:
-  static Board FromScreenshot(const cv::Mat& screenshot);
-  static Board FromString(const std::string& string);
+  Board(const cv::Mat &cells) : cells_(cells) {}
+  static Board FromString(const std::string &string);
 
   int rows() const { return cells_.rows; }
   int cols() const { return cells_.cols; }
