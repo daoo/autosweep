@@ -14,22 +14,19 @@ class Desktop {
 private:
   Display *_display;
   Window _window;
-  int _x, _y, _width, _height;
 
 public:
-  Desktop(int x, int y, int width, int height)
-      : _x(x), _y(y), _width(width), _height(height) {
+  Desktop() {
     _display = XOpenDisplay(nullptr);
     _window = DefaultRootWindow(_display);
   }
 
-  void Capture(cv::Mat &mat) const {
-    XImage *image = XGetImage(_display, _window, _x, _y, _width, _height,
-                              AllPlanes, ZPixmap);
-    // Could hold the XImage in a separate capture object with clean up
-    // destructor to avoid the clone().
-    mat = cv::Mat(_height, _width, CV_8UC4, image->data).clone();
+  cv::Mat Capture(int x, int y, int width, int height) const {
+    XImage *image =
+        XGetImage(_display, _window, x, y, width, height, AllPlanes, ZPixmap);
+    cv::Mat mat = cv::Mat(height, width, CV_8UC4, image->data).clone();
     XDestroyImage(image);
+    return mat;
   }
 
   void Move(int x, int y) const {

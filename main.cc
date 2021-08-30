@@ -48,11 +48,9 @@ bool ComputeAndClick(const Desktop &desktop, const Board &board) {
 }
 
 int main() {
-  Desktop desktop(X1, Y1, X2 - X1, Y2 - Y1);
-
+  Desktop desktop;
   {
-    cv::Mat image;
-    desktop.Capture(image);
+    cv::Mat image = desktop.Capture(X1, Y1, X2 - X1, Y2 - Y1);
     Board board = Board::FromScreenshot(image);
 
     if (board.IsEmpty()) {
@@ -62,8 +60,7 @@ int main() {
   }
 
   while (true) {
-    cv::Mat image;
-    desktop.Capture(image);
+    cv::Mat image = desktop.Capture(X1, Y1, X2 - X1, Y2 - Y1);
     Board board = Board::FromScreenshot(image);
     if (!ComputeAndClick(desktop, board)) {
       Cell cell = ACellWithMostNeighboringMines(board);

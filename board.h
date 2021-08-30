@@ -10,7 +10,7 @@
 class Board {
 private:
   cv::Mat cells_;
-  Board(const cv::Mat& cells);
+  explicit Board(const cv::Mat& cells);
 
 public:
   static Board FromScreenshot(const cv::Mat& screenshot);
