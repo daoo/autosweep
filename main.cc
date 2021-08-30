@@ -57,6 +57,10 @@ int main() {
     std::cout << "Taking screenshot of " << board_rectangle << "\n";
     cv::Mat screenshot = desktop.Capture(board_rectangle);
     Board board = ParseBoard(screenshot);
+    if (board.IsWon()) {
+      std::cout << "Victory!\n";
+      return 0;
+    }
     if (!ComputeAndClick(desktop, board_rectangle.tl(), board)) {
       Cell cell = ACellWithMostNeighboringMines(board);
       std::cout << "No 100% moves found, guessing.\n";
