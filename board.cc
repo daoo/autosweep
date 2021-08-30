@@ -2,32 +2,7 @@
 
 #include <opencv4/opencv2/opencv.hpp>
 
-Board Board::FromString(const std::string &string) {
-  // Find size
-  int rows = 0;
-  int cols = 0;
-  size_t prevpos = 0;
-  size_t pos = 0;
-  while ((pos = string.find('\n', pos + 1)) != std::string::npos) {
-    int thiscol = pos - prevpos;
-    if (cols > 0 && thiscol != cols) {
-      throw std::runtime_error("FromString() error");
-    }
-    cols = thiscol;
-    prevpos = pos + 1;
-    ++rows;
-  }
-
-  cv::Mat cells(rows, cols, CV_8UC1);
-  for (int i = 0; i < rows; ++i) {
-    for (int j = 0; j < cols; ++j) {
-      char c = string.at(i * (cols + 1) + j);
-      cells.at<uchar>(i, j) = Cell::FromChar(c);
-    }
-  }
-  return Board(cells);
-}
-
+namespace {
 void CountNeighbor(const Board &board, int row, int col, int *unknown_count,
                    int *flag_count) {
   if (row < 0 || row >= board.rows())
@@ -61,6 +36,7 @@ void ListUnknownNeighbor(const Board &board, int row, int col,
   if (cell.IsUnknown())
     unknown_neighbors->insert(cell);
 }
+
 void ListUnknownNeighbors(const Board &board, int row, int col,
                           std::unordered_set<Cell> *unknown_neighbors) {
   ListUnknownNeighbor(board, row - 1, col - 1, unknown_neighbors);
@@ -71,6 +47,53 @@ void ListUnknownNeighbors(const Board &board, int row, int col,
   ListUnknownNeighbor(board, row + 1, col + 0, unknown_neighbors);
   ListUnknownNeighbor(board, row + 1, col - 1, unknown_neighbors);
   ListUnknownNeighbor(board, row + 0, col - 1, unknown_neighbors);
+}
+
+int CellExpectedMineCount(const cv::Mat &board, int row, int col) {
+  if (row < 0 || row >= board.rows)
+    return 0;
+  if (col < 0 || col >= board.cols)
+    return 0;
+  uchar cell = board.at<uchar>(row, col);
+  return cell >= 1 && cell <= 9 ? cell : 0;
+}
+
+int NeighboringExpectedMineCount(const cv::Mat &board, int row, int col) {
+  return CellExpectedMineCount(board, row - 1, col - 1) +
+         CellExpectedMineCount(board, row - 1, col + 0) +
+         CellExpectedMineCount(board, row - 1, col + 1) +
+         CellExpectedMineCount(board, row + 0, col + 1) +
+         CellExpectedMineCount(board, row + 1, col + 1) +
+         CellExpectedMineCount(board, row + 1, col + 0) +
+         CellExpectedMineCount(board, row + 1, col - 1) +
+         CellExpectedMineCount(board, row + 0, col - 1);
+}
+} // namespace
+
+Board Board::FromString(const std::string &string) {
+  // Find size
+  int rows = 0;
+  int cols = 0;
+  size_t previous_position = 0;
+  size_t position = 0;
+  while ((position = string.find('\n', position + 1)) != std::string::npos) {
+    int current_column = position - previous_position;
+    if (cols > 0 && current_column != cols) {
+      throw std::runtime_error("FromString() error");
+    }
+    cols = current_column;
+    previous_position = position + 1;
+    ++rows;
+  }
+
+  cv::Mat cells(rows, cols, CV_8UC1);
+  for (int i = 0; i < rows; ++i) {
+    for (int j = 0; j < cols; ++j) {
+      char c = string.at(i * (cols + 1) + j);
+      cells.at<uchar>(i, j) = Cell::FromChar(c);
+    }
+  }
+  return Board(cells);
 }
 
 // Algorithm:
@@ -99,26 +122,6 @@ void Changes(const Board &board, std::unordered_set<Cell> &new_flags,
   }
 }
 
-int CellExpectedMineCount(const cv::Mat &board, int row, int col) {
-  if (row < 0 || row >= board.rows)
-    return 0;
-  if (col < 0 || col >= board.cols)
-    return 0;
-  uchar cell = board.at<uchar>(row, col);
-  return cell >= 1 && cell <= 9 ? cell : 0;
-}
-
-int NeighboringExpectedMineCount(const cv::Mat &board, int row, int col) {
-  return CellExpectedMineCount(board, row - 1, col - 1) +
-         CellExpectedMineCount(board, row - 1, col + 0) +
-         CellExpectedMineCount(board, row - 1, col + 1) +
-         CellExpectedMineCount(board, row + 0, col + 1) +
-         CellExpectedMineCount(board, row + 1, col + 1) +
-         CellExpectedMineCount(board, row + 1, col + 0) +
-         CellExpectedMineCount(board, row + 1, col - 1) +
-         CellExpectedMineCount(board, row + 0, col - 1);
-}
-
 Cell ACellWithMostNeighboringMines(const Board &board) {
   cv::Mat recounted(board.rows(), board.cols(), CV_8UC1);
   for (int row = 0; row < board.rows(); ++row) {
@@ -127,7 +130,8 @@ Cell ACellWithMostNeighboringMines(const Board &board) {
       if (cell.IsNumber()) {
         int unknown_count = 0, flag_count = 0;
         CountNeighbors(board, row, col, &unknown_count, &flag_count);
-        recounted.at<uchar>(row, col) = cell.value - flag_count;
+        recounted.at<uchar>(row, col) =
+            static_cast<uchar>(cell.value - flag_count);
       } else {
         recounted.at<uchar>(row, col) = cell.value;
       }

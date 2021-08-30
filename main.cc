@@ -8,6 +8,8 @@
 #include "detector.h"
 #include "stream.h"
 
+namespace {
+
 void LeftClick(const Desktop &desktop, cv::Point2i top_left, Cell cell) {
   std::cout << "LeftClick(" << cell.row << ", " << cell.col << ") "
             << cell.value << '\n';
@@ -36,6 +38,8 @@ bool ComputeAndClick(const Desktop &desktop, cv::Point2i top_left,
 
   return true;
 }
+
+} // namespace
 
 int main() {
   Desktop desktop;

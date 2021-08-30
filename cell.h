@@ -2,13 +2,14 @@
 #define AUTOSWEEP_CELL_H_
 
 #include <functional>
+#include <stdexcept>
 
-const uint8_t CELL_UNKNOWN = 255;
-const uint8_t CELL_FLAG = 254;
+const unsigned char CELL_UNKNOWN = 255;
+const unsigned char CELL_FLAG = 254;
 
 struct Cell {
   int row, col;
-  uint8_t value;
+  int value;
 
   bool IsFlag() const { return value == CELL_FLAG; }
   bool IsUnknown() const { return value == CELL_UNKNOWN; }
@@ -16,7 +17,7 @@ struct Cell {
   bool IsNumber() const { return value >= 1 && value <= 9; }
   bool IsKnown() const { return IsZero() || IsNumber() || IsFlag(); }
 
-  static uint8_t FromChar(char character) {
+  static unsigned char FromChar(char character) {
     switch (character) {
     case '-':
       return CELL_UNKNOWN;
@@ -92,7 +93,7 @@ template <> struct hash<Cell> {
     using std::string;
 
     return ((hash<int>()(cell.row) ^ (hash<int>()(cell.col) << 1)) >> 1) ^
-           (hash<uint8_t>()(cell.value) << 1);
+           (hash<int>()(cell.value) << 1);
   }
 };
 

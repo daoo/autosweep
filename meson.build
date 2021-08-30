@@ -10,7 +10,9 @@ executable(
     'main',
     'main.cc',
     'board.cc',
+    'desktop.cc',
     'detector.cc',
+    'stream.cc',
     dependencies: [opencv, x11])
 
 tests = executable(
