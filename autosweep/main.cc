@@ -1,12 +1,12 @@
-#include <opencv4/opencv2/opencv.hpp>
-
 #include <iostream>
 #include <unordered_set>
 
-#include "board.h"
-#include "desktop.h"
-#include "detector.h"
-#include "stream.h"
+#include <opencv4/opencv2/opencv.hpp>
+
+#include "autosweep/board.h"
+#include "autosweep/desktop.h"
+#include "autosweep/detector.h"
+#include "autosweep/stream.h"
 
 namespace {
 
@@ -25,7 +25,7 @@ void RightClick(const Desktop &desktop, cv::Point2i top_left, Cell cell) {
 bool ComputeAndClick(const Desktop &desktop, cv::Point2i top_left,
                      const Board &board) {
   std::unordered_set<Cell> new_flags, new_clicks;
-  Changes(board, new_flags, new_clicks);
+  Changes(board, &new_flags, &new_clicks);
   if (new_flags.empty() && new_clicks.empty())
     return false;
 

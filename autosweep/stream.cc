@@ -1,4 +1,4 @@
-#include "stream.h"
+#include "autosweep/stream.h"
 
 std::ostream &operator<<(std::ostream &stream, const Cell &cell) {
   stream << cell.ToChar();

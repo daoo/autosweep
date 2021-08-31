@@ -3,7 +3,7 @@
 
 #include <opencv4/opencv2/core/mat.hpp>
 
-#include "board.h"
+#include "autosweep/board.h"
 
 cv::Rect FindBoardLocation(const cv::Mat &image);
 Board ParseBoard(const cv::Mat &image);

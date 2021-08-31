@@ -3,6 +3,7 @@
 
 #include <functional>
 #include <stdexcept>
+#include <string>
 
 const unsigned char CELL_UNKNOWN = 255;
 const unsigned char CELL_FLAG = 254;

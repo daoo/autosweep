@@ -1,7 +1,7 @@
 #include <opencv4/opencv2/opencv.hpp>
 
-#include "cell.h"
-#include "detector.h"
+#include "autosweep/cell.h"
+#include "autosweep/detector.h"
 
 static const struct {
   int width;
@@ -145,8 +145,9 @@ const int BOARD_PIXEL_Y_BOTTOM_PADDING = 10;
 const int BOARD_PIXEL_CELL_SIDE = 16;
 
 cv::Rect FindSmileyLocation(const cv::Mat &screenshot) {
-  cv::Mat smiley_face_rgb(smiley_face.width, smiley_face.height, CV_8UC3,
-                          (void *)smiley_face.pixel_data);
+  cv::Mat smiley_face_rgb(
+      smiley_face.width, smiley_face.height, CV_8UC3,
+      static_cast<void *>(const_cast<uchar *>(smiley_face.pixel_data)));
   cv::Mat smiley_face_bgr;
   cv::cvtColor(smiley_face_rgb, smiley_face_bgr, cv::COLOR_RGB2BGR);
 

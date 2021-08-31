@@ -1,6 +1,8 @@
-#include "board.h"
+#include <string>
 
 #include <opencv4/opencv2/opencv.hpp>
+
+#include "autosweep/board.h"
 
 namespace {
 void CountNeighbor(const Board &board, int row, int col, int *unknown_count,
@@ -103,8 +105,8 @@ Board Board::FromString(const std::string &string) {
 // If the number of unknown neighbors plus the number of neighboring flags is
 // equal to the cell's number, the neighbors can be flagged.
 // If the cell is satisified, all unknown neighbors can be clicked.
-void Changes(const Board &board, std::unordered_set<Cell> &new_flags,
-             std::unordered_set<Cell> &new_clicks) {
+void Changes(const Board &board, std::unordered_set<Cell> *new_flags,
+             std::unordered_set<Cell> *new_clicks) {
   for (int row = 0; row < board.rows(); ++row) {
     for (int col = 0; col < board.cols(); ++col) {
       Cell cell = board.at(row, col);
@@ -112,10 +114,10 @@ void Changes(const Board &board, std::unordered_set<Cell> &new_flags,
         int unknown_count = 0, flag_count = 0;
         CountNeighbors(board, row, col, &unknown_count, &flag_count);
         if (cell.value == flag_count) {
-          ListUnknownNeighbors(board, row, col, &new_clicks);
+          ListUnknownNeighbors(board, row, col, new_clicks);
         }
         if (cell.value == unknown_count + flag_count) {
-          ListUnknownNeighbors(board, row, col, &new_flags);
+          ListUnknownNeighbors(board, row, col, new_flags);
         }
       }
     }

@@ -7,18 +7,18 @@ opencv = dependency('opencv4')
 x11 = dependency('X11')
 
 executable(
-    'main',
-    'main.cc',
-    'board.cc',
-    'desktop.cc',
-    'detector.cc',
-    'stream.cc',
+    'autosweep',
+    'autosweep/main.cc',
+    'autosweep/board.cc',
+    'autosweep/desktop.cc',
+    'autosweep/detector.cc',
+    'autosweep/stream.cc',
     dependencies: [opencv, x11])
 
 tests = executable(
     'tests',
-    'tests.cc',
-    'board.cc',
+    'autosweep/tests.cc',
+    'autosweep/board.cc',
     dependencies: [opencv])
 
 test('automatic tests', tests)

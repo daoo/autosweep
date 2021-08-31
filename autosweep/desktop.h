@@ -1,10 +1,10 @@
-#ifndef AUTOSWEEP_SCREEN_H_
-#define AUTOSWEEP_SCREEN_H_
-
-#include <opencv4/opencv2/core/mat.hpp>
+#ifndef AUTOSWEEP_DESKTOP_H_
+#define AUTOSWEEP_DESKTOP_H_
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
+
+#include <opencv4/opencv2/core/mat.hpp>
 
 class Desktop {
 private:
@@ -30,4 +30,4 @@ public:
   ~Desktop() { XCloseDisplay(_display); }
 };
 
-#endif // AUTOSWEEP_SCREEN_H_
+#endif // AUTOSWEEP_DESKTOP_H_

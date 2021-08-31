@@ -1,8 +1,8 @@
+#include <iostream>
+
 #include <opencv4/opencv2/opencv.hpp>
 
-#include "desktop.h"
-
-#include <iostream>
+#include "autosweep/desktop.h"
 
 const int DELAY_AFTER_CLICK = 70000;
 const int DELAY_AFTER_MOVE = 1;

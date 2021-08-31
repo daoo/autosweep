@@ -1,17 +1,19 @@
 #ifndef AUTOSWEEP_BOARD_H_
 #define AUTOSWEEP_BOARD_H_
 
-#include <opencv4/opencv2/core/mat.hpp>
+#include <string>
 #include <unordered_set>
 
-#include "cell.h"
+#include <opencv4/opencv2/core/mat.hpp>
+
+#include "autosweep/cell.h"
 
 class Board {
 private:
   cv::Mat cells_;
 
 public:
-  Board(const cv::Mat &cells) : cells_(cells) {}
+  explicit Board(const cv::Mat &cells) : cells_(cells) {}
   static Board FromString(const std::string &string);
 
   int rows() const { return cells_.rows; }
@@ -42,8 +44,8 @@ public:
   }
 };
 
-void Changes(const Board &board, std::unordered_set<Cell> &new_flags,
-             std::unordered_set<Cell> &new_clicks);
+void Changes(const Board &board, std::unordered_set<Cell> *new_flags,
+             std::unordered_set<Cell> *new_clicks);
 
 Cell ACellWithMostNeighboringMines(const Board &board);
 
