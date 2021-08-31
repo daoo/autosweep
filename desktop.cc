@@ -4,7 +4,7 @@
 
 #include <iostream>
 
-const int DELAY_AFTER_CLICK = 60000;
+const int DELAY_AFTER_CLICK = 70000;
 const int DELAY_AFTER_MOVE = 1;
 const int DELAY_BETWEEN_PRESS_AND_RELEASE = 1;
 
