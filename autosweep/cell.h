@@ -2,8 +2,8 @@
 #define AUTOSWEEP_CELL_H_
 
 #include <functional>
+#include <sstream>
 #include <stdexcept>
-#include <string>
 
 const unsigned char CELL_UNKNOWN = 255;
 const unsigned char CELL_FLAG = 254;
@@ -48,7 +48,9 @@ struct Cell {
       return 9;
     }
 
-    throw std::runtime_error("FromChar() error");
+    std::stringstream error;
+    error << "Character '" << character << "' does not represent a valid cell.";
+    throw std::runtime_error(error.str());
   }
 
   char ToChar() const {
@@ -93,7 +95,6 @@ template <> struct hash<Cell> {
   std::size_t operator()(const Cell &cell) const {
     using std::hash;
     using std::size_t;
-    using std::string;
 
     return ((hash<int>()(cell.row) ^ (hash<int>()(cell.col) << 1)) >> 1) ^
            (hash<int>()(cell.value) << 1);

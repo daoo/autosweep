@@ -102,11 +102,14 @@ Board Board::FromString(const std::string &string) {
   size_t previous_position = 0;
   size_t position = 0;
   while ((position = string.find('\n', position + 1)) != std::string::npos) {
-    int current_column = position - previous_position;
-    if (cols > 0 && current_column != cols) {
-      throw std::runtime_error("FromString() error");
+    int line_length = position - previous_position;
+    if (cols > 0 && line_length != cols) {
+      std::stringstream error;
+      error << "Line ending at position " << position << " has length "
+            << line_length << " when expecting length " << cols << ".";
+      throw std::runtime_error(error.str());
     }
-    cols = current_column;
+    cols = line_length;
     previous_position = position + 1;
     ++rows;
   }

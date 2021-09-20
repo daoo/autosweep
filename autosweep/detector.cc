@@ -234,7 +234,7 @@ uchar ParseCell(const cv::Mat &cell) {
     return 8;
 
   std::stringstream error;
-  error << "Error: found cell with unknown mean color (" << color[0] << ", "
+  error << "Found cell with unknown mean color (" << color[0] << ", "
         << color[1] << ", " << color[2] << ").";
   throw std::runtime_error(error.str());
 }
