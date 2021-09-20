@@ -63,6 +63,10 @@ int main() {
       std::cout << "Victory!\n";
       return 0;
     }
+    if (board.IsLost()) {
+      std::cout << "Lost!\n";
+      return 0;
+    }
     if (!ComputeAndClick(desktop, board_rectangle.tl(), board)) {
       Cell cell = ACellWithMostNeighboringMines(board);
       std::cout << "No 100% moves found, guessing.\n";

@@ -72,6 +72,29 @@ int NeighboringExpectedMineCount(const cv::Mat &board, int row, int col) {
 }
 } // namespace
 
+Board::Board(const cv::Mat &cells) : cells_(cells) {
+  bool has_known = false;
+  bool has_unknown = false;
+  bool has_mine = false;
+  for (int i = 0; i < rows(); ++i) {
+    for (int j = 0; j < cols(); ++j) {
+      Cell cell = at(i, j);
+      has_known = has_known || cell.IsKnown();
+      has_unknown = has_unknown || cell.IsUnknown();
+      has_mine = has_mine || cell.IsMine();
+    }
+  }
+  if (!has_known) {
+    state_ = BOARD_EMPTY;
+  } else if (!has_unknown) {
+    state_ = BOARD_WON;
+  } else if (has_mine) {
+    state_ = BOARD_LOST;
+  } else {
+    state_ = BOARD_INCOMPLETE;
+  }
+}
+
 Board Board::FromString(const std::string &string) {
   // Find size
   int rows = 0;

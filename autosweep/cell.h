@@ -7,6 +7,7 @@
 
 const unsigned char CELL_UNKNOWN = 255;
 const unsigned char CELL_FLAG = 254;
+const unsigned char CELL_MINE = 253;
 
 struct Cell {
   int row, col;
@@ -14,9 +15,10 @@ struct Cell {
 
   bool IsFlag() const { return value == CELL_FLAG; }
   bool IsUnknown() const { return value == CELL_UNKNOWN; }
+  bool IsKnown() const { return !IsUnknown(); }
+  bool IsMine() const { return value == CELL_MINE; }
   bool IsZero() const { return value == 0; }
   bool IsNumber() const { return value >= 1 && value <= 9; }
-  bool IsKnown() const { return IsZero() || IsNumber() || IsFlag(); }
 
   static unsigned char FromChar(char character) {
     switch (character) {

@@ -206,11 +206,14 @@ uchar ParseCell(const cv::Mat &cell) {
   cv::Scalar six_color(162.445312, 162.445312, 127.851562);
   cv::Scalar seven_color(148.523438, 148.523438, 148.523438);
   cv::Scalar eight_color(161.414062, 161.414062, 161.414062);
+  cv::Scalar mine_color(18.878906, 18.878906, 162.316406);
 
   if (cv::norm(color, unknown_color) < 0.1)
     return CELL_UNKNOWN;
   if (cv::norm(color, flag_color) < 0.1)
     return CELL_FLAG;
+  if (cv::norm(color, mine_color) < 0.1)
+    return CELL_MINE;
   if (cv::norm(color, zero_color) < 0.1)
     return 0;
   if (cv::norm(color, one_color) < 0.1)
@@ -230,9 +233,10 @@ uchar ParseCell(const cv::Mat &cell) {
   if (cv::norm(color, eight_color) < 0.1)
     return 8;
 
-  printf("unknown color: %f, %f, %f\n", color[0], color[1], color[2]);
-  exit(1);
-  return 0;
+  std::stringstream error;
+  error << "Error: found cell with unknown mean color (" << color[0] << ", "
+        << color[1] << ", " << color[2] << ").";
+  throw std::runtime_error(error.str());
 }
 
 Board ParseBoard(const cv::Mat &screenshot) {
