@@ -1,9 +1,12 @@
 #!/usr/bin/env bash
 
-rm --recursive --force out_debug out_release
+rm --recursive --force out_debug out_sanitize out_release
+
+CXX="clang++" LDFLAGS="-fuse-ld=mold" \
+  meson setup "out_debug" --buildtype debug
 
 CXX="clang++" CXXFLAGS="-fsanitize=address,undefined" LDFLAGS="-fuse-ld=mold" \
-  meson setup "out_debug" --buildtype debug
+  meson setup "out_sanitize" --buildtype debug
 
 CXX="clang++" CXXFLAGS="-march=native" LDFLAGS="-fuse-ld=mold" \
   meson setup "out_release" --buildtype release

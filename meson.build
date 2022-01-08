@@ -12,6 +12,8 @@ libautosweep = static_library(
     'autosweep',
     'autosweep/board.cc',
     'autosweep/detector.cc',
+    'autosweep/network.cc',
+    'autosweep/neuralboard.cc',
     'autosweep/stream.cc',
     dependencies: [opencv])
 
@@ -26,6 +28,8 @@ tests = executable(
     'tests',
     'autosweep/tests.cc',
     'autosweep/board_unittests.cc',
+    'autosweep/network_unittests.cc',
+    'autosweep/neuralboard_unittests.cc',
     dependencies: [catch2, opencv],
     link_with: libautosweep)
 
