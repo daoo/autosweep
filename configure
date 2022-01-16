@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+rm --recursive --force out_debug out_release
+
 CXX="clang++" CXXFLAGS="-W -Wall -g -fsanitize=address,undefined" \
   meson "out_debug"
 
