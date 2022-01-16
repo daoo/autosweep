@@ -115,10 +115,10 @@ Board Board::FromString(const std::string &string) {
   }
 
   cv::Mat cells(rows, cols, CV_8UC1);
-  for (int i = 0; i < rows; ++i) {
-    for (int j = 0; j < cols; ++j) {
-      char c = string.at(i * (cols + 1) + j);
-      cells.at<uchar>(i, j) = Cell::FromChar(c);
+  for (int row = 0; row < rows; ++row) {
+    for (int col = 0; col < cols; ++col) {
+      char c = string.at(row * (cols + 1) + col);
+      cells.at<uchar>(row, col) = Cell::FromChar(c);
     }
   }
   return Board(cells);

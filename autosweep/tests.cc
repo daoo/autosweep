@@ -1,9 +1,23 @@
+#include "autosweep/board.h"
+#include "autosweep/stream.h"
+
 #include <iostream>
 
 #include <opencv4/opencv2/opencv.hpp>
 
-#include "autosweep/board.h"
-#include "autosweep/stream.h"
+void FromString_ExampleInput_ExpectedBoard() {
+  std::string string("-1\n"
+                     "10\n");
+
+  Board board = Board::FromString(string);
+
+  assert(board.rows() == 2);
+  assert(board.cols() == 2);
+  assert(board.at(0, 0).value == CELL_UNKNOWN);
+  assert(board.at(0, 1).value == 1);
+  assert(board.at(1, 0).value == 1);
+  assert(board.at(1, 1).value == 0);
+}
 
 void Test1() {
   Board board = Board::FromString("-1\n"
@@ -43,6 +57,7 @@ void Test3() {
 }
 
 int main() {
+  FromString_ExampleInput_ExpectedBoard();
   Test1();
   Test2();
   Test3();
