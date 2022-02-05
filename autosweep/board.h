@@ -27,7 +27,7 @@ public:
   bool IsLost() const { return state_ == BOARD_LOST; }
 
   Cell at(int row, int col) const {
-    return Cell{row, col, cells_.at<uint8_t>(row, col)};
+    return Cell{row, col, static_cast<CellValue>(cells_.at<uint8_t>(row, col))};
   }
 };
 

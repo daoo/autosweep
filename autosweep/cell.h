@@ -5,13 +5,25 @@
 #include <sstream>
 #include <stdexcept>
 
-const unsigned char CELL_UNKNOWN = 255;
-const unsigned char CELL_FLAG = 254;
-const unsigned char CELL_MINE = 253;
+enum CellValue : uint8_t {
+  CELL_0 = 0,
+  CELL_1,
+  CELL_2,
+  CELL_3,
+  CELL_4,
+  CELL_5,
+  CELL_6,
+  CELL_7,
+  CELL_8,
+  CELL_9,
+  CELL_UNKNOWN,
+  CELL_MINE,
+  CELL_FLAG
+};
 
 struct Cell {
   int row, col;
-  int value;
+  CellValue value;
 
   bool IsFlag() const { return value == CELL_FLAG; }
   bool IsUnknown() const { return value == CELL_UNKNOWN; }
@@ -20,32 +32,32 @@ struct Cell {
   bool IsZero() const { return value == 0; }
   bool IsNumber() const { return value >= 1 && value <= 9; }
 
-  static unsigned char FromChar(char character) {
+  static CellValue FromChar(char character) {
     switch (character) {
     case '-':
       return CELL_UNKNOWN;
     case 'f':
       return CELL_FLAG;
     case '0':
-      return 0;
+      return CELL_0;
     case '1':
-      return 1;
+      return CELL_1;
     case '2':
-      return 2;
+      return CELL_2;
     case '3':
-      return 3;
+      return CELL_3;
     case '4':
-      return 4;
+      return CELL_4;
     case '5':
-      return 5;
+      return CELL_5;
     case '6':
-      return 6;
+      return CELL_6;
     case '7':
-      return 7;
+      return CELL_7;
     case '8':
-      return 8;
+      return CELL_8;
     case '9':
-      return 9;
+      return CELL_9;
     }
 
     std::stringstream error;
@@ -55,10 +67,6 @@ struct Cell {
 
   char ToChar() const {
     switch (value) {
-    case CELL_UNKNOWN:
-      return '-';
-    case CELL_FLAG:
-      return 'f';
     case 0:
       return '0';
     case 1:
@@ -79,6 +87,12 @@ struct Cell {
       return '8';
     case 9:
       return '9';
+    case CELL_UNKNOWN:
+      return '-';
+    case CELL_FLAG:
+      return 'f';
+    case CELL_MINE:
+      return 'm';
     }
 
     return 'e';
