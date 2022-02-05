@@ -2,8 +2,8 @@
 
 rm --recursive --force out_debug out_release
 
-CXX="clang++" CXXFLAGS="-fsanitize=address,undefined" \
+CXX="clang++" CXXFLAGS="-fsanitize=address,undefined" LDFLAGS="-fuse-ld=mold" \
   meson setup "out_debug" --buildtype debug
 
-CXX="clang++" CXXFLAGS="-march=native" \
+CXX="clang++" CXXFLAGS="-march=native" LDFLAGS="-fuse-ld=mold" \
   meson setup "out_release" --buildtype release
