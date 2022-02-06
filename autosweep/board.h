@@ -1,23 +1,22 @@
 #ifndef AUTOSWEEP_BOARD_H_
 #define AUTOSWEEP_BOARD_H_
 
+#include <opencv4/opencv2/core/mat.hpp>
 #include <string>
 #include <unordered_set>
-
-#include <opencv4/opencv2/core/mat.hpp>
 
 #include "autosweep/cell.h"
 
 enum BoardState { BOARD_EMPTY, BOARD_INCOMPLETE, BOARD_WON, BOARD_LOST };
 
 class Board {
-private:
+ private:
   cv::Mat cells_;
   BoardState state_;
 
-public:
-  explicit Board(const cv::Mat &cells);
-  static Board FromString(const std::string &string);
+ public:
+  explicit Board(const cv::Mat& cells);
+  static Board FromString(const std::string& string);
 
   int rows() const { return cells_.rows; }
   int cols() const { return cells_.cols; }
@@ -31,9 +30,10 @@ public:
   }
 };
 
-void Changes(const Board &board, std::unordered_set<Cell> *new_flags,
-             std::unordered_set<Cell> *new_clicks);
+void Changes(
+    const Board& board, std::unordered_set<Cell>* new_flags,
+    std::unordered_set<Cell>* new_clicks);
 
-Cell ACellWithMostNeighboringMines(const Board &board);
+Cell ACellWithMostNeighboringMines(const Board& board);
 
-#endif // AUTOSWEEP_BOARD_H_
+#endif  // AUTOSWEEP_BOARD_H_

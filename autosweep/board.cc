@@ -1,23 +1,20 @@
-#include <string>
-
-#include <opencv4/opencv2/opencv.hpp>
-
 #include "autosweep/board.h"
 
+#include <opencv4/opencv2/opencv.hpp>
+#include <string>
+
 namespace {
-void CountNeighbor(const Board &board, int row, int col, int *unknown_count,
-                   int *flag_count) {
-  if (row < 0 || row >= board.rows())
-    return;
-  if (col < 0 || col >= board.cols())
-    return;
+void CountNeighbor(
+    const Board& board, int row, int col, int* unknown_count, int* flag_count) {
+  if (row < 0 || row >= board.rows()) return;
+  if (col < 0 || col >= board.cols()) return;
   Cell cell = board.at(row, col);
   *unknown_count += cell.IsUnknown() ? 1 : 0;
   *flag_count += cell.IsFlag() ? 1 : 0;
 }
 
-void CountNeighbors(const Board &board, int row, int col, int *unknown_count,
-                    int *flag_count) {
+void CountNeighbors(
+    const Board& board, int row, int col, int* unknown_count, int* flag_count) {
   CountNeighbor(board, row - 1, col - 1, unknown_count, flag_count);
   CountNeighbor(board, row - 1, col + 0, unknown_count, flag_count);
   CountNeighbor(board, row - 1, col + 1, unknown_count, flag_count);
@@ -28,19 +25,18 @@ void CountNeighbors(const Board &board, int row, int col, int *unknown_count,
   CountNeighbor(board, row + 0, col - 1, unknown_count, flag_count);
 }
 
-void ListUnknownNeighbor(const Board &board, int row, int col,
-                         std::unordered_set<Cell> *unknown_neighbors) {
-  if (row < 0 || row >= board.rows())
-    return;
-  if (col < 0 || col >= board.cols())
-    return;
+void ListUnknownNeighbor(
+    const Board& board, int row, int col,
+    std::unordered_set<Cell>* unknown_neighbors) {
+  if (row < 0 || row >= board.rows()) return;
+  if (col < 0 || col >= board.cols()) return;
   Cell cell = board.at(row, col);
-  if (cell.IsUnknown())
-    unknown_neighbors->insert(cell);
+  if (cell.IsUnknown()) unknown_neighbors->insert(cell);
 }
 
-void ListUnknownNeighbors(const Board &board, int row, int col,
-                          std::unordered_set<Cell> *unknown_neighbors) {
+void ListUnknownNeighbors(
+    const Board& board, int row, int col,
+    std::unordered_set<Cell>* unknown_neighbors) {
   ListUnknownNeighbor(board, row - 1, col - 1, unknown_neighbors);
   ListUnknownNeighbor(board, row - 1, col + 0, unknown_neighbors);
   ListUnknownNeighbor(board, row - 1, col + 1, unknown_neighbors);
@@ -51,28 +47,26 @@ void ListUnknownNeighbors(const Board &board, int row, int col,
   ListUnknownNeighbor(board, row + 0, col - 1, unknown_neighbors);
 }
 
-int CellExpectedMineCount(const cv::Mat &board, int row, int col) {
-  if (row < 0 || row >= board.rows)
-    return 0;
-  if (col < 0 || col >= board.cols)
-    return 0;
+int CellExpectedMineCount(const cv::Mat& board, int row, int col) {
+  if (row < 0 || row >= board.rows) return 0;
+  if (col < 0 || col >= board.cols) return 0;
   uchar cell = board.at<uchar>(row, col);
   return cell >= 1 && cell <= 9 ? cell : 0;
 }
 
-int NeighboringExpectedMineCount(const cv::Mat &board, int row, int col) {
+int NeighboringExpectedMineCount(const cv::Mat& board, int row, int col) {
   return CellExpectedMineCount(board, row - 1, col - 1) +
-         CellExpectedMineCount(board, row - 1, col + 0) +
-         CellExpectedMineCount(board, row - 1, col + 1) +
-         CellExpectedMineCount(board, row + 0, col + 1) +
-         CellExpectedMineCount(board, row + 1, col + 1) +
-         CellExpectedMineCount(board, row + 1, col + 0) +
-         CellExpectedMineCount(board, row + 1, col - 1) +
-         CellExpectedMineCount(board, row + 0, col - 1);
+      CellExpectedMineCount(board, row - 1, col + 0) +
+      CellExpectedMineCount(board, row - 1, col + 1) +
+      CellExpectedMineCount(board, row + 0, col + 1) +
+      CellExpectedMineCount(board, row + 1, col + 1) +
+      CellExpectedMineCount(board, row + 1, col + 0) +
+      CellExpectedMineCount(board, row + 1, col - 1) +
+      CellExpectedMineCount(board, row + 0, col - 1);
 }
-} // namespace
+}  // namespace
 
-Board::Board(const cv::Mat &cells) : cells_(cells) {
+Board::Board(const cv::Mat& cells) : cells_(cells) {
   bool has_known = false;
   bool has_unknown = false;
   bool has_mine = false;
@@ -95,7 +89,7 @@ Board::Board(const cv::Mat &cells) : cells_(cells) {
   }
 }
 
-Board Board::FromString(const std::string &string) {
+Board Board::FromString(const std::string& string) {
   // Find size
   int rows = 0;
   int cols = 0;
@@ -131,8 +125,9 @@ Board Board::FromString(const std::string &string) {
 // If the number of unknown neighbors plus the number of neighboring flags is
 // equal to the cell's number, the neighbors can be flagged.
 // If the cell is satisified, all unknown neighbors can be clicked.
-void Changes(const Board &board, std::unordered_set<Cell> *new_flags,
-             std::unordered_set<Cell> *new_clicks) {
+void Changes(
+    const Board& board, std::unordered_set<Cell>* new_flags,
+    std::unordered_set<Cell>* new_clicks) {
   for (int row = 0; row < board.rows(); ++row) {
     for (int col = 0; col < board.cols(); ++col) {
       Cell cell = board.at(row, col);
@@ -150,7 +145,7 @@ void Changes(const Board &board, std::unordered_set<Cell> *new_flags,
   }
 }
 
-Cell ACellWithMostNeighboringMines(const Board &board) {
+Cell ACellWithMostNeighboringMines(const Board& board) {
   cv::Mat recounted(board.rows(), board.cols(), CV_8UC1);
   for (int row = 0; row < board.rows(); ++row) {
     for (int col = 0; col < board.cols(); ++col) {

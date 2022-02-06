@@ -1,0 +1,5 @@
+BasedOnStyle: Google
+DerivePointerAlignment: false
+Language: Cpp
+AlignAfterOpenBracket: AlwaysBreak
+AlignOperands: DontAlign

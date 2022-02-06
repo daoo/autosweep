@@ -1,11 +1,12 @@
-#include "autosweep/board.h"
-
 #include <catch2/catch.hpp>
+
+#include "autosweep/board.h"
 
 TEST_CASE("FromString", "[Board]") {
   SECTION("example input, expected output") {
-    std::string string("-1\n"
-                       "10\n");
+    std::string string(
+        "-1\n"
+        "10\n");
 
     Board board = Board::FromString(string);
 
@@ -20,8 +21,9 @@ TEST_CASE("FromString", "[Board]") {
 
 TEST_CASE("Changes", "[Board]") {
   SECTION("one unknown cell with neighboring ones, gives new flag") {
-    Board board = Board::FromString("-1\n"
-                                    "10\n");
+    Board board = Board::FromString(
+        "-1\n"
+        "10\n");
 
     std::unordered_set<Cell> new_flags, new_clicks;
     Changes(board, &new_flags, &new_clicks);
@@ -33,12 +35,13 @@ TEST_CASE("Changes", "[Board]") {
   }
 
   SECTION("case where algorithm does not work, no clicks or flags") {
-    Board board = Board::FromString("------\n"
-                                    "--111-\n"
-                                    "-2101-\n"
-                                    "--212-\n"
-                                    "---1--\n"
-                                    "------\n");
+    Board board = Board::FromString(
+        "------\n"
+        "--111-\n"
+        "-2101-\n"
+        "--212-\n"
+        "---1--\n"
+        "------\n");
 
     std::unordered_set<Cell> new_flags, new_clicks;
     Changes(board, &new_flags, &new_clicks);
@@ -50,9 +53,10 @@ TEST_CASE("Changes", "[Board]") {
 
 TEST_CASE("ACellWithMostNeighboringMines", "[Board]") {
   SECTION("example input, expected cell") {
-    Board board = Board::FromString("--1\n"
-                                    "--2\n"
-                                    "12f\n");
+    Board board = Board::FromString(
+        "--1\n"
+        "--2\n"
+        "12f\n");
 
     Cell cell = ACellWithMostNeighboringMines(board);
 

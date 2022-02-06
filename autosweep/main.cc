@@ -1,7 +1,6 @@
 #include <iostream>
-#include <unordered_set>
-
 #include <opencv4/opencv2/opencv.hpp>
+#include <unordered_set>
 
 #include "autosweep/board.h"
 #include "autosweep/desktop.h"
@@ -10,24 +9,23 @@
 
 namespace {
 
-void LeftClick(const Desktop &desktop, cv::Point2i top_left, Cell cell) {
+void LeftClick(const Desktop& desktop, cv::Point2i top_left, Cell cell) {
   std::cout << "LeftClick(" << cell.row << ", " << cell.col << ")\n";
   cv::Point2i point = CellLocation(top_left, cell.row, cell.col);
   desktop.LeftClick(point.x, point.y);
 }
 
-void RightClick(const Desktop &desktop, cv::Point2i top_left, Cell cell) {
+void RightClick(const Desktop& desktop, cv::Point2i top_left, Cell cell) {
   std::cout << "RightClick(" << cell.row << ", " << cell.col << ")\n";
   cv::Point2i point = CellLocation(top_left, cell.row, cell.col);
   desktop.RightClick(point.x, point.y);
 }
 
-bool ComputeAndClick(const Desktop &desktop, cv::Point2i top_left,
-                     const Board &board) {
+bool ComputeAndClick(
+    const Desktop& desktop, cv::Point2i top_left, const Board& board) {
   std::unordered_set<Cell> new_flags, new_clicks;
   Changes(board, &new_flags, &new_clicks);
-  if (new_flags.empty() && new_clicks.empty())
-    return false;
+  if (new_flags.empty() && new_clicks.empty()) return false;
 
   for (auto iter = new_flags.cbegin(); iter != new_flags.cend(); ++iter)
     RightClick(desktop, top_left, *iter);
@@ -37,7 +35,7 @@ bool ComputeAndClick(const Desktop &desktop, cv::Point2i top_left,
   return true;
 }
 
-} // namespace
+}  // namespace
 
 int main() {
   Desktop desktop;
@@ -50,8 +48,9 @@ int main() {
 
     if (board.IsEmpty()) {
       std::cout << "Board empty, clicking middle.\n";
-      LeftClick(desktop, board_rectangle.tl(),
-                board.at(board.rows() / 2, board.cols() / 2));
+      LeftClick(
+          desktop, board_rectangle.tl(),
+          board.at(board.rows() / 2, board.cols() / 2));
     }
   }
 

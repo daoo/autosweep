@@ -1,7 +1,8 @@
+#include "autosweep/detector.h"
+
 #include <opencv4/opencv2/opencv.hpp>
 
 #include "autosweep/cell.h"
-#include "autosweep/detector.h"
 
 static const struct {
   int width;
@@ -144,24 +145,25 @@ const int BOARD_PIXEL_Y_TOP_PADDING = 50;
 const int BOARD_PIXEL_Y_BOTTOM_PADDING = 10;
 const int BOARD_PIXEL_CELL_SIDE = 16;
 
-cv::Rect FindSmileyLocation(const cv::Mat &screenshot) {
+cv::Rect FindSmileyLocation(const cv::Mat& screenshot) {
   cv::Mat smiley_face_rgb(
       smiley_face.width, smiley_face.height, CV_8UC3,
-      static_cast<void *>(const_cast<uchar *>(smiley_face.pixel_data)));
+      static_cast<void*>(const_cast<uchar*>(smiley_face.pixel_data)));
   cv::Mat smiley_face_bgr;
   cv::cvtColor(smiley_face_rgb, smiley_face_bgr, cv::COLOR_RGB2BGR);
 
   cv::Mat match_result;
-  cv::matchTemplate(screenshot, smiley_face_bgr, match_result,
-                    cv::TM_SQDIFF_NORMED);
+  cv::matchTemplate(
+      screenshot, smiley_face_bgr, match_result, cv::TM_SQDIFF_NORMED);
   cv::Point smiley_location, maxLoc;
   double minVal, maxVal;
   cv::minMaxLoc(match_result, &minVal, &maxVal, &smiley_location, &maxLoc);
-  return cv::Rect{smiley_location.x, smiley_location.y, smiley_face.width,
-                  smiley_face.height};
+  return cv::Rect{
+      smiley_location.x, smiley_location.y, smiley_face.width,
+      smiley_face.height};
 }
 
-cv::Rect FindBoardLocation(const cv::Mat &screenshot) {
+cv::Rect FindBoardLocation(const cv::Mat& screenshot) {
   cv::Rect smiley_location = FindSmileyLocation(screenshot);
   const int BOARD_Y_PADDING = 11;
   assert(smiley_location.y >= BOARD_Y_PADDING);
@@ -172,27 +174,24 @@ cv::Rect FindBoardLocation(const cv::Mat &screenshot) {
   int left, right, bottom;
   for (left = smiley_location.x; left >= 0; --left) {
     cv::Vec3b pixel = screenshot.at<cv::Vec3b>(top, left);
-    if (pixel != THAT_GREY_COLOR)
-      break;
+    if (pixel != THAT_GREY_COLOR) break;
   }
   left++;
   for (right = smiley_location.x; right < screenshot.cols; ++right) {
     cv::Vec3b pixel = screenshot.at<cv::Vec3b>(top, right);
-    if (pixel != THAT_GREY_COLOR)
-      break;
+    if (pixel != THAT_GREY_COLOR) break;
   }
   right--;
   for (bottom = top; bottom < screenshot.rows; ++bottom) {
     cv::Vec3b pixel = screenshot.at<cv::Vec3b>(bottom, left);
-    if (pixel != THAT_GREY_COLOR)
-      break;
+    if (pixel != THAT_GREY_COLOR) break;
   }
   int width = right - left;
   int height = bottom - top;
   return cv::Rect{left, top, width, height};
 }
 
-uchar ParseCell(const cv::Mat &cell) {
+uchar ParseCell(const cv::Mat& cell) {
   cv::Scalar color = cv::mean(cell);
 
   cv::Scalar unknown_color(189, 189, 189);
@@ -208,30 +207,18 @@ uchar ParseCell(const cv::Mat &cell) {
   cv::Scalar eight_color(161.414062, 161.414062, 161.414062);
   cv::Scalar mine_color(18.878906, 18.878906, 162.316406);
 
-  if (cv::norm(color, unknown_color) < 0.1)
-    return CELL_UNKNOWN;
-  if (cv::norm(color, flag_color) < 0.1)
-    return CELL_FLAG;
-  if (cv::norm(color, mine_color) < 0.1)
-    return CELL_MINE;
-  if (cv::norm(color, zero_color) < 0.1)
-    return 0;
-  if (cv::norm(color, one_color) < 0.1)
-    return 1;
-  if (cv::norm(color, two_color) < 0.1)
-    return 2;
-  if (cv::norm(color, three_color) < 0.1)
-    return 3;
-  if (cv::norm(color, four_color) < 0.1)
-    return 4;
-  if (cv::norm(color, five_color) < 0.1)
-    return 5;
-  if (cv::norm(color, six_color) < 0.1)
-    return 6;
-  if (cv::norm(color, seven_color) < 0.1)
-    return 7;
-  if (cv::norm(color, eight_color) < 0.1)
-    return 8;
+  if (cv::norm(color, unknown_color) < 0.1) return CELL_UNKNOWN;
+  if (cv::norm(color, flag_color) < 0.1) return CELL_FLAG;
+  if (cv::norm(color, mine_color) < 0.1) return CELL_MINE;
+  if (cv::norm(color, zero_color) < 0.1) return 0;
+  if (cv::norm(color, one_color) < 0.1) return 1;
+  if (cv::norm(color, two_color) < 0.1) return 2;
+  if (cv::norm(color, three_color) < 0.1) return 3;
+  if (cv::norm(color, four_color) < 0.1) return 4;
+  if (cv::norm(color, five_color) < 0.1) return 5;
+  if (cv::norm(color, six_color) < 0.1) return 6;
+  if (cv::norm(color, seven_color) < 0.1) return 7;
+  if (cv::norm(color, eight_color) < 0.1) return 8;
 
   std::stringstream error;
   error << "Found cell with unknown mean color (" << color[0] << ", "
@@ -239,10 +226,10 @@ uchar ParseCell(const cv::Mat &cell) {
   throw std::runtime_error(error.str());
 }
 
-Board ParseBoard(const cv::Mat &screenshot) {
+Board ParseBoard(const cv::Mat& screenshot) {
   int cell_grid_width = screenshot.cols - BOARD_PIXEL_X_PADDING * 2;
   int cell_grid_height = screenshot.rows - BOARD_PIXEL_Y_TOP_PADDING -
-                         BOARD_PIXEL_Y_BOTTOM_PADDING;
+      BOARD_PIXEL_Y_BOTTOM_PADDING;
   int cols = 1 + cell_grid_width / BOARD_PIXEL_CELL_SIDE;
   int rows = 1 + cell_grid_height / BOARD_PIXEL_CELL_SIDE;
 
@@ -264,8 +251,8 @@ Board ParseBoard(const cv::Mat &screenshot) {
 cv::Point2i CellLocation(cv::Point2i board_location, int row, int col) {
   int offset = BOARD_PIXEL_CELL_SIDE / 2;
   int x = offset + board_location.x + BOARD_PIXEL_X_PADDING +
-          col * BOARD_PIXEL_CELL_SIDE;
+      col * BOARD_PIXEL_CELL_SIDE;
   int y = offset + board_location.y + BOARD_PIXEL_Y_TOP_PADDING +
-          row * BOARD_PIXEL_CELL_SIDE;
+      row * BOARD_PIXEL_CELL_SIDE;
   return {x, y};
 }

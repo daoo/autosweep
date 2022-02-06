@@ -7,14 +7,14 @@
 #include <opencv4/opencv2/core/mat.hpp>
 
 class Desktop {
-private:
-  Display *_display;
+ private:
+  Display* _display;
   Window _window;
 
   void Move(int x, int y) const;
   void Click(unsigned int button) const;
 
-public:
+ public:
   Desktop() {
     _display = XOpenDisplay(nullptr);
     _window = DefaultRootWindow(_display);
@@ -22,7 +22,7 @@ public:
 
   cv::Rect GetDisplayRectangle() const;
 
-  cv::Mat Capture(const cv::Rect &rectangle) const;
+  cv::Mat Capture(const cv::Rect& rectangle) const;
 
   void LeftClick(int x, int y) const;
   void RightClick(int x, int y) const;
@@ -30,4 +30,4 @@ public:
   ~Desktop() { XCloseDisplay(_display); }
 };
 
-#endif // AUTOSWEEP_DESKTOP_H_
+#endif  // AUTOSWEEP_DESKTOP_H_
