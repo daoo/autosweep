@@ -8,20 +8,25 @@ catch2 = dependency('catch2')
 opencv = dependency('opencv4')
 x11 = dependency('X11')
 
+libautosweep = static_library(
+    'autosweep',
+    'autosweep/board.cc',
+    'autosweep/detector.cc',
+    'autosweep/stream.cc',
+    dependencies: [opencv])
+
 executable(
     'autosweep',
     'autosweep/main.cc',
-    'autosweep/board.cc',
     'autosweep/desktop.cc',
-    'autosweep/detector.cc',
-    'autosweep/stream.cc',
-    dependencies: [opencv, x11])
+    dependencies: [opencv, x11],
+    link_with: libautosweep)
 
 tests = executable(
     'tests',
     'autosweep/tests.cc',
-    'autosweep/board.cc',
     'autosweep/board_unittests.cc',
-    dependencies: [catch2, opencv])
+    dependencies: [catch2, opencv],
+    link_with: libautosweep)
 
 test('autosweep unit tests', tests)
