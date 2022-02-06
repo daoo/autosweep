@@ -1,7 +1,7 @@
-#include "autosweep/desktop.h"
-
 #include <iostream>
 #include <opencv4/opencv2/opencv.hpp>
+
+#include "autosweep/desktop.h"
 
 const int DELAY_AFTER_CLICK = 70000;
 const int DELAY_AFTER_MOVE = 1;
@@ -34,13 +34,13 @@ void Desktop::Click(unsigned int button) const {
   }
   // Press
   event.type = ButtonPress;
-  if (XSendEvent(_display, PointerWindow, True, ButtonPressMask, &event) == 0)
+  if (XSendEvent(_display, PointerWindow, true, ButtonPressMask, &event) == 0)
     std::cerr << "Error to send the event!\n";
   XFlush(_display);
   usleep(DELAY_BETWEEN_PRESS_AND_RELEASE);
   // Release
   event.type = ButtonRelease;
-  if (XSendEvent(_display, PointerWindow, True, ButtonReleaseMask, &event) == 0)
+  if (XSendEvent(_display, PointerWindow, true, ButtonReleaseMask, &event) == 0)
     std::cerr << "Error to send the event!\n";
   XFlush(_display);
   usleep(DELAY_AFTER_CLICK);

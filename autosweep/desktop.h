@@ -1,10 +1,10 @@
 #ifndef AUTOSWEEP_DESKTOP_H_
 #define AUTOSWEEP_DESKTOP_H_
 
+#include <opencv4/opencv2/core/mat.hpp>
+
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
-
-#include <opencv4/opencv2/core/mat.hpp>
 
 class Desktop {
  private:
