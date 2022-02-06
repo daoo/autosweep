@@ -21,6 +21,7 @@ tests = executable(
     'tests',
     'autosweep/tests.cc',
     'autosweep/board.cc',
+    'autosweep/board_unittests.cc',
     dependencies: [catch2, opencv])
 
-test('automatic tests', tests)
+test('autosweep unit tests', tests)
