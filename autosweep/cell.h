@@ -2,8 +2,7 @@
 #define AUTOSWEEP_CELL_H_
 
 #include <functional>
-#include <sstream>
-#include <stdexcept>
+#include <optional>
 
 enum CellValue : uint8_t {
   CELL_0 = 0,
@@ -32,7 +31,7 @@ struct Cell {
   bool IsZero() const { return value == 0; }
   bool IsNumber() const { return value >= 1 && value <= 9; }
 
-  static CellValue FromChar(char character) {
+  static std::optional<CellValue> FromChar(char character) {
     switch (character) {
       case '-':
         return CELL_UNKNOWN;
@@ -60,9 +59,7 @@ struct Cell {
         return CELL_9;
     }
 
-    std::stringstream error;
-    error << "Character '" << character << "' does not represent a valid cell.";
-    throw std::runtime_error(error.str());
+    return std::nullopt;
   }
 
   char ToChar() const {

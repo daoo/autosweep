@@ -1,7 +1,6 @@
-#include "autosweep/board.h"
+#include <sstream>
 
-#include <opencv4/opencv2/opencv.hpp>
-#include <string>
+#include "autosweep/board.h"
 
 namespace {
 void CountNeighbor(
@@ -111,8 +110,15 @@ Board Board::FromString(const std::string& string) {
   cv::Mat cells(rows, cols, CV_8UC1);
   for (int row = 0; row < rows; ++row) {
     for (int col = 0; col < cols; ++col) {
-      char c = string.at(row * (cols + 1) + col);
-      cells.at<uchar>(row, col) = Cell::FromChar(c);
+      char character = string.at(row * (cols + 1) + col);
+      auto parsed = Cell::FromChar(character);
+      if (!parsed) {
+        std::stringstream error;
+        error << "Character '" << character
+              << "' does not represent a valid cell.";
+        throw std::runtime_error(error.str());
+      }
+      cells.at<uchar>(row, col) = parsed.value();
     }
   }
   return Board(cells);
