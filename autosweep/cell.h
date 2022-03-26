@@ -33,10 +33,6 @@ struct Cell {
 
   static std::optional<CellValue> FromChar(char character) {
     switch (character) {
-      case '-':
-        return CELL_UNKNOWN;
-      case 'f':
-        return CELL_FLAG;
       case '0':
         return CELL_0;
       case '1':
@@ -57,6 +53,12 @@ struct Cell {
         return CELL_8;
       case '9':
         return CELL_9;
+      case '-':
+        return CELL_UNKNOWN;
+      case 'f':
+        return CELL_FLAG;
+      case 'm':
+        return CELL_MINE;
     }
 
     return std::nullopt;
