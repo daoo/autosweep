@@ -1,8 +1,7 @@
-#include "autosweep/detector.h"
-
-#include <opencv4/opencv2/opencv.hpp>
+#include <opencv4/opencv2/imgproc.hpp>
 
 #include "autosweep/cell.h"
+#include "autosweep/detector.h"
 
 static const struct {
   int width;
