@@ -77,10 +77,10 @@ Network::Nabla Network::BackPropagate(
     nabla_b.emplace_back(_biases[i].size(), CV_64F);
     nabla_w.emplace_back(_weights[i].size(), CV_64F);
   }
-  auto delta = CostDerivative(at(activations, -1), output_activation) *
-      SigmoidPrime(at(zs, -1));
-  nabla_b.back() = delta;
-  nabla_w.back() = delta * at(activations, -2).t();
+  cv::Mat delta = CostDerivative(at(activations, -1), output_activation)
+                      .mul(SigmoidPrime(at(zs, -1)));
+  at(nabla_b, -1) = delta;
+  at(nabla_w, -1) = delta * at(activations, -2).t();
   for (size_t i = 2; i < _biases.size(); ++i) {
     delta = _weights[i + 1].t() * delta * SigmoidPrime(zs[i]);
     at(nabla_b, -i) = delta;
