@@ -1,7 +1,9 @@
 #include <opencv4/opencv2/imgproc.hpp>
 
-#include "autosweep/cell.h"
+#include "autosweep/board.h"
 #include "autosweep/detector.h"
+
+namespace {
 
 static const struct {
   int width;
@@ -162,7 +164,12 @@ cv::Rect FindSmileyLocation(const cv::Mat& screenshot) {
       smiley_face.height};
 }
 
-cv::Rect FindBoardLocation(const cv::Mat& screenshot) {
+}  // namespace
+
+BoardLocation::BoardLocation(cv::Rect board, cv::Rect smiely)
+    : _board(std::move(board)), _smiely(std::move(smiely)) {}
+
+BoardLocation BoardLocation::Find(const cv::Mat& screenshot) {
   cv::Rect smiley_location = FindSmileyLocation(screenshot);
   const int BOARD_Y_PADDING = 11;
   assert(smiley_location.y >= BOARD_Y_PADDING);
@@ -187,8 +194,25 @@ cv::Rect FindBoardLocation(const cv::Mat& screenshot) {
   }
   int width = right - left;
   int height = bottom - top;
-  return cv::Rect{left, top, width, height};
+  cv::Rect board_location{left, top, width, height};
+
+  return BoardLocation(board_location, smiley_location);
 }
+
+cv::Point2i BoardLocation::CellCenter(size_t row, size_t col) const {
+  int offset = BOARD_PIXEL_CELL_SIDE / 2;
+  int x =
+      offset + _board.x + BOARD_PIXEL_X_PADDING + col * BOARD_PIXEL_CELL_SIDE;
+  int y = offset + _board.y + BOARD_PIXEL_Y_TOP_PADDING +
+      row * BOARD_PIXEL_CELL_SIDE;
+  return {x, y};
+}
+
+cv::Point2i BoardLocation::SmielyCenter() const {
+  return {_smiely.x + _smiely.width / 2, _smiely.y + _smiely.height / 2};
+}
+
+namespace {
 
 uchar ParseCell(const cv::Mat& cell) {
   cv::Scalar color = cv::mean(cell);
@@ -227,6 +251,8 @@ uchar ParseCell(const cv::Mat& cell) {
   throw std::runtime_error(error.str());
 }
 
+}  // namespace
+
 Board ParseBoard(const cv::Mat& screenshot) {
   int cell_grid_width = screenshot.cols - BOARD_PIXEL_X_PADDING * 2;
   int cell_grid_height = screenshot.rows - BOARD_PIXEL_Y_TOP_PADDING -
@@ -247,13 +273,4 @@ Board ParseBoard(const cv::Mat& screenshot) {
   }
 
   return Board(cells);
-}
-
-cv::Point2i CellLocation(cv::Point2i board_location, int row, int col) {
-  int offset = BOARD_PIXEL_CELL_SIDE / 2;
-  int x = offset + board_location.x + BOARD_PIXEL_X_PADDING +
-      col * BOARD_PIXEL_CELL_SIDE;
-  int y = offset + board_location.y + BOARD_PIXEL_Y_TOP_PADDING +
-      row * BOARD_PIXEL_CELL_SIDE;
-  return {x, y};
 }
