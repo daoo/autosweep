@@ -12,15 +12,13 @@ namespace {
 void LeftClick(
     const Desktop& desktop, const BoardLocation& location, Cell cell) {
   std::cout << "LeftClick(" << cell.row << ", " << cell.col << ")\n";
-  cv::Point2i point = location.CellCenter(cell.row, cell.col);
-  desktop.LeftClick(point.x, point.y);
+  desktop.LeftClick(location.CellCenter(cell.row, cell.col));
 }
 
 void RightClick(
     const Desktop& desktop, const BoardLocation& location, Cell cell) {
   std::cout << "RightClick(" << cell.row << ", " << cell.col << ")\n";
-  cv::Point2i point = location.CellCenter(cell.row, cell.col);
-  desktop.RightClick(point.x, point.y);
+  desktop.RightClick(location.CellCenter(cell.row, cell.col));
 }
 
 bool ComputeAndClick(

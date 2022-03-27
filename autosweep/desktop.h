@@ -24,8 +24,8 @@ class Desktop {
 
   cv::Mat Capture(const cv::Rect& rectangle) const;
 
-  void LeftClick(int x, int y) const;
-  void RightClick(int x, int y) const;
+  void LeftClick(cv::Point2i point) const;
+  void RightClick(cv::Point2i point) const;
 
   ~Desktop() { XCloseDisplay(_display); }
 };

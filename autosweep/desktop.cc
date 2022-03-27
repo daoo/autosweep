@@ -65,12 +65,12 @@ cv::Mat Desktop::Capture(const cv::Rect& rectangle) const {
   return bgr;
 }
 
-void Desktop::LeftClick(int x, int y) const {
-  Move(x, y);
+void Desktop::LeftClick(cv::Point2i point) const {
+  Move(point.x, point.y);
   Click(Button1);
 }
 
-void Desktop::RightClick(int x, int y) const {
-  Move(x, y);
+void Desktop::RightClick(cv::Point2i point) const {
+  Move(point.x, point.y);
   Click(Button3);
 }
