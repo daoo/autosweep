@@ -145,6 +145,7 @@ const int BOARD_PIXEL_X_PADDING = 8;
 const int BOARD_PIXEL_Y_TOP_PADDING = 50;
 const int BOARD_PIXEL_Y_BOTTOM_PADDING = 10;
 const int BOARD_PIXEL_CELL_SIDE = 16;
+const int BOARD_PIXEL_Y_PADDING = 11;
 
 cv::Rect FindSmileyLocation(const cv::Mat& screenshot) {
   cv::Mat smiley_face_rgb(
@@ -167,13 +168,25 @@ cv::Rect FindSmileyLocation(const cv::Mat& screenshot) {
 }  // namespace
 
 BoardLocation::BoardLocation(cv::Rect board, cv::Rect smiely)
-    : _board(std::move(board)), _smiely(std::move(smiely)) {}
+    : _board(std::move(board)), _smiely(std::move(smiely)) {
+  auto minimumWidth = BOARD_PIXEL_X_PADDING * 2;
+  if (_board.width < minimumWidth) {
+    throw std::runtime_error(
+        "Board width " + std::to_string(_board.width) + " less than minimum " +
+        std::to_string(minimumWidth));
+  }
+  auto minimumHeight = BOARD_PIXEL_Y_TOP_PADDING + BOARD_PIXEL_Y_BOTTOM_PADDING;
+  if (_board.height < minimumHeight) {
+    throw std::runtime_error(
+        "Board width " + std::to_string(_board.height) + " less than minimum " +
+        std::to_string(minimumHeight));
+  }
+}
 
 BoardLocation BoardLocation::Find(const cv::Mat& screenshot) {
   cv::Rect smiley_location = FindSmileyLocation(screenshot);
-  const int BOARD_Y_PADDING = 11;
-  assert(smiley_location.y >= BOARD_Y_PADDING);
-  int top = smiley_location.y - BOARD_Y_PADDING;
+  assert(smiley_location.y >= BOARD_PIXEL_Y_PADDING);
+  int top = smiley_location.y - BOARD_PIXEL_Y_PADDING;
 
   const cv::Vec3b THAT_GREY_COLOR(189, 189, 189);
 
