@@ -7,5 +7,6 @@ class Board;
 
 cv::Mat GenerateInputLayer(const Board& board);
 cv::Mat GenerateOutputLayer(const Board& board);
+cv::Mat ReshapeResult(const Board& board, const cv::Mat& result);
 
 #endif  // AUTOSWEEP_NEURALBOARD_H_

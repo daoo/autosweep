@@ -24,6 +24,13 @@ executable(
     dependencies: [opencv, x11],
     link_with: libautosweep)
 
+executable(
+    'autosweep-neural',
+    'autosweep/mainneural.cc',
+    'autosweep/desktop.cc',
+    dependencies: [opencv, x11],
+    link_with: libautosweep)
+
 tests = executable(
     'tests',
     'autosweep/tests.cc',

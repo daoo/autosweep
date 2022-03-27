@@ -26,3 +26,16 @@ cv::Mat GenerateOutputLayer(const Board& board) {
   }
   return mat;
 }
+
+cv::Mat ReshapeResult(const Board& board, const cv::Mat& result) {
+  // TODO: Use reshape or something
+  cv::Mat mat(board.rows() * board.cols(), 1, CV_64F);
+  const double* ptr = result.ptr<double>();
+  for (int row = 0; row < board.rows(); ++row) {
+    for (int col = 0; col < board.cols(); ++col) {
+      mat.at<double>(row, col) = *ptr;
+      ++ptr;
+    }
+  }
+  return mat;
+}
