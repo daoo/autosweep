@@ -61,7 +61,7 @@ int main() {
   BoardLocation location = BoardLocation::Find(initial_screenshot);
 
   Board board = ParseBoard(initial_screenshot(location.Board()));
-  int cells = board.rows() * board.cols();
+  size_t cells = board.rows() * board.cols();
   Network network({cells, cells, cells});
   constexpr double eta = 3;
   while (true) {

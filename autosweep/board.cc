@@ -4,7 +4,8 @@
 
 namespace {
 void CountNeighbor(
-    const Board& board, int row, int col, int* unknown_count, int* flag_count) {
+    const Board& board, size_t row, size_t col, size_t* unknown_count,
+    size_t* flag_count) {
   if (row < 0 || row >= board.rows()) return;
   if (col < 0 || col >= board.cols()) return;
   Cell cell = board.at(row, col);
@@ -13,7 +14,8 @@ void CountNeighbor(
 }
 
 void CountNeighbors(
-    const Board& board, int row, int col, int* unknown_count, int* flag_count) {
+    const Board& board, size_t row, size_t col, size_t* unknown_count,
+    size_t* flag_count) {
   CountNeighbor(board, row - 1, col - 1, unknown_count, flag_count);
   CountNeighbor(board, row - 1, col + 0, unknown_count, flag_count);
   CountNeighbor(board, row - 1, col + 1, unknown_count, flag_count);
@@ -25,7 +27,7 @@ void CountNeighbors(
 }
 
 void ListUnknownNeighbor(
-    const Board& board, int row, int col,
+    const Board& board, size_t row, size_t col,
     std::unordered_set<Cell>* unknown_neighbors) {
   if (row < 0 || row >= board.rows()) return;
   if (col < 0 || col >= board.cols()) return;
@@ -34,7 +36,7 @@ void ListUnknownNeighbor(
 }
 
 void ListUnknownNeighbors(
-    const Board& board, int row, int col,
+    const Board& board, size_t row, size_t col,
     std::unordered_set<Cell>* unknown_neighbors) {
   ListUnknownNeighbor(board, row - 1, col - 1, unknown_neighbors);
   ListUnknownNeighbor(board, row - 1, col + 0, unknown_neighbors);
@@ -51,8 +53,8 @@ Board::Board(const cv::Mat& cells) : cells_(cells) {
   bool has_known = false;
   bool has_unknown = false;
   bool has_mine = false;
-  for (int i = 0; i < rows(); ++i) {
-    for (int j = 0; j < cols(); ++j) {
+  for (size_t i = 0; i < rows(); ++i) {
+    for (size_t j = 0; j < cols(); ++j) {
       Cell cell = at(i, j);
       has_known = has_known || cell.IsKnown();
       has_unknown = has_unknown || cell.IsUnknown();
@@ -72,12 +74,12 @@ Board::Board(const cv::Mat& cells) : cells_(cells) {
 
 Board Board::FromString(const std::string& string) {
   // Find size
-  int rows = 0;
-  int cols = 0;
+  size_t rows = 0;
+  size_t cols = 0;
   size_t previous_position = 0;
   size_t position = 0;
   while ((position = string.find('\n', position + 1)) != std::string::npos) {
-    int line_length = position - previous_position;
+    size_t line_length = position - previous_position;
     if (cols > 0 && line_length != cols) {
       std::stringstream error;
       error << "Line ending at position " << position << " has length "
@@ -90,8 +92,8 @@ Board Board::FromString(const std::string& string) {
   }
 
   cv::Mat cells(rows, cols, CV_8UC1);
-  for (int row = 0; row < rows; ++row) {
-    for (int col = 0; col < cols; ++col) {
+  for (size_t row = 0; row < rows; ++row) {
+    for (size_t col = 0; col < cols; ++col) {
       char character = string.at(row * (cols + 1) + col);
       auto parsed = Cell::FromChar(character);
       if (!parsed) {
@@ -109,8 +111,8 @@ Board Board::FromString(const std::string& string) {
 std::vector<Cell> UnknownCells(const Board& board) {
   std::vector<Cell> unknowns;
   unknowns.reserve(board.rows() * board.cols());
-  for (int row = 0; row < board.rows(); ++row) {
-    for (int col = 0; col < board.cols(); ++col) {
+  for (size_t row = 0; row < board.rows(); ++row) {
+    for (size_t col = 0; col < board.cols(); ++col) {
       Cell cell = board.at(row, col);
       if (cell.IsUnknown()) {
         unknowns.emplace_back(cell);
@@ -130,11 +132,11 @@ std::vector<Cell> UnknownCells(const Board& board) {
 void ComputeKnownNeighboringCellStates(
     const Board& board, std::unordered_set<Cell>* new_flags,
     std::unordered_set<Cell>* new_clicks) {
-  for (int row = 0; row < board.rows(); ++row) {
-    for (int col = 0; col < board.cols(); ++col) {
+  for (size_t row = 0; row < board.rows(); ++row) {
+    for (size_t col = 0; col < board.cols(); ++col) {
       Cell cell = board.at(row, col);
       if (cell.IsNumber()) {
-        int unknown_count = 0, flag_count = 0;
+        size_t unknown_count = 0, flag_count = 0;
         CountNeighbors(board, row, col, &unknown_count, &flag_count);
         if (cell.value == flag_count) {
           ListUnknownNeighbors(board, row, col, new_clicks);

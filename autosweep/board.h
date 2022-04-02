@@ -18,8 +18,8 @@ class Board {
   explicit Board(const cv::Mat& cells);
   static Board FromString(const std::string& string);
 
-  int rows() const { return cells_.rows; }
-  int cols() const { return cells_.cols; }
+  size_t rows() const { return cells_.rows; }
+  size_t cols() const { return cells_.cols; }
 
   bool IsEmpty() const { return state_ == BOARD_EMPTY; }
   bool IsWon() const { return state_ == BOARD_WON; }
