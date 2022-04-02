@@ -65,7 +65,7 @@ int main() {
   Network network({cells, cells, cells});
   constexpr double eta = 3;
   while (true) {
-    desktop.LeftClick(location.SmielyCenter());
+    desktop.LeftClick(location.SmileyCenter());
     LeftClick(desktop, location, board.at(board.rows() / 2, board.cols() / 2));
     Inner(desktop, location, network, eta);
   }

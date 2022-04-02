@@ -168,17 +168,17 @@ cv::Rect FindSmileyLocation(const cv::Mat& screenshot) {
 }  // namespace
 
 BoardLocation::BoardLocation(cv::Rect board, cv::Rect smiely)
-    : _board(std::move(board)), _smiely(std::move(smiely)) {
+    : board_(std::move(board)), smiley_(std::move(smiely)) {
   auto minimumWidth = BOARD_PIXEL_X_PADDING * 2;
-  if (_board.width < minimumWidth) {
+  if (board_.width < minimumWidth) {
     throw std::runtime_error(
-        "Board width " + std::to_string(_board.width) + " less than minimum " +
+        "Board width " + std::to_string(board_.width) + " less than minimum " +
         std::to_string(minimumWidth));
   }
   auto minimumHeight = BOARD_PIXEL_Y_TOP_PADDING + BOARD_PIXEL_Y_BOTTOM_PADDING;
-  if (_board.height < minimumHeight) {
+  if (board_.height < minimumHeight) {
     throw std::runtime_error(
-        "Board width " + std::to_string(_board.height) + " less than minimum " +
+        "Board width " + std::to_string(board_.height) + " less than minimum " +
         std::to_string(minimumHeight));
   }
 }
@@ -215,14 +215,14 @@ BoardLocation BoardLocation::Find(const cv::Mat& screenshot) {
 cv::Point2i BoardLocation::CellCenter(size_t row, size_t col) const {
   int offset = BOARD_PIXEL_CELL_SIDE / 2;
   int x =
-      offset + _board.x + BOARD_PIXEL_X_PADDING + col * BOARD_PIXEL_CELL_SIDE;
-  int y = offset + _board.y + BOARD_PIXEL_Y_TOP_PADDING +
+      offset + board_.x + BOARD_PIXEL_X_PADDING + col * BOARD_PIXEL_CELL_SIDE;
+  int y = offset + board_.y + BOARD_PIXEL_Y_TOP_PADDING +
       row * BOARD_PIXEL_CELL_SIDE;
   return {x, y};
 }
 
-cv::Point2i BoardLocation::SmielyCenter() const {
-  return {_smiely.x + _smiely.width / 2, _smiely.y + _smiely.height / 2};
+cv::Point2i BoardLocation::SmileyCenter() const {
+  return {smiley_.x + smiley_.width / 2, smiley_.y + smiley_.height / 2};
 }
 
 namespace {

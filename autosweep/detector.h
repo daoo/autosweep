@@ -8,16 +8,16 @@ class BoardLocation {
   static BoardLocation Find(const cv::Mat& image);
 
   cv::Point2i CellCenter(size_t row, size_t col) const;
-  cv::Point2i SmielyCenter() const;
+  cv::Point2i SmileyCenter() const;
 
-  const cv::Rect& Board() const { return _board; }
-  const cv::Rect& Smiely() const { return _smiely; }
+  const cv::Rect& Board() const { return board_; }
+  const cv::Rect& Smiely() const { return smiley_; }
 
  private:
   BoardLocation(cv::Rect board, cv::Rect smiely);
 
-  cv::Rect _board;
-  cv::Rect _smiely;
+  cv::Rect board_;
+  cv::Rect smiley_;
 };
 
 class Board;

@@ -17,14 +17,14 @@ class Network {
   Nabla BackPropagate(cv::Mat input, cv::Mat output) const;
   void Update(const Nabla& nabla, double eta);
 
-  size_t layers() const { return _biases.size() + 1; }
+  size_t layers() const { return biases_.size() + 1; }
 
-  const std::vector<cv::Mat>& biases() const { return _biases; }
-  const std::vector<cv::Mat>& weights() const { return _weights; }
+  const std::vector<cv::Mat>& biases() const { return biases_; }
+  const std::vector<cv::Mat>& weights() const { return weights_; }
 
  private:
-  std::vector<cv::Mat> _biases;
-  std::vector<cv::Mat> _weights;
+  std::vector<cv::Mat> biases_;
+  std::vector<cv::Mat> weights_;
 };
 
 #endif  // AUTOSWEEP_NETWORK_H_
