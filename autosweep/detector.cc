@@ -243,11 +243,13 @@ uchar ParseCell(const cv::Mat& cell) {
   cv::Scalar eight_color(161.414062, 161.414062, 161.414062);
   cv::Scalar mine_color(18.878906, 18.878906, 162.316406);
   cv::Scalar clicked_mine_color(125.191, 125.191, 125.191);
+  cv::Scalar misplaced_flag_mine_color(108.914, 108.914, 154.734);
 
   if (cv::norm(color, unknown_color) < 0.1) return CELL_UNKNOWN;
   if (cv::norm(color, flag_color) < 0.1) return CELL_FLAG;
   if (cv::norm(color, mine_color) < 0.1) return CELL_MINE;
   if (cv::norm(color, clicked_mine_color) < 0.1) return CELL_MINE;
+  if (cv::norm(color, misplaced_flag_mine_color) < 0.1) return CELL_MINE;
   if (cv::norm(color, zero_color) < 0.1) return 0;
   if (cv::norm(color, one_color) < 0.1) return 1;
   if (cv::norm(color, two_color) < 0.1) return 2;
