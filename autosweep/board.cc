@@ -45,24 +45,6 @@ void ListUnknownNeighbors(
   ListUnknownNeighbor(board, row + 1, col - 1, unknown_neighbors);
   ListUnknownNeighbor(board, row + 0, col - 1, unknown_neighbors);
 }
-
-int CellExpectedMineCount(const cv::Mat& board, int row, int col) {
-  if (row < 0 || row >= board.rows) return 0;
-  if (col < 0 || col >= board.cols) return 0;
-  uchar cell = board.at<uchar>(row, col);
-  return cell >= 1 && cell <= 9 ? cell : 0;
-}
-
-int NeighboringExpectedMineCount(const cv::Mat& board, int row, int col) {
-  return CellExpectedMineCount(board, row - 1, col - 1) +
-      CellExpectedMineCount(board, row - 1, col + 0) +
-      CellExpectedMineCount(board, row - 1, col + 1) +
-      CellExpectedMineCount(board, row + 0, col + 1) +
-      CellExpectedMineCount(board, row + 1, col + 1) +
-      CellExpectedMineCount(board, row + 1, col + 0) +
-      CellExpectedMineCount(board, row + 1, col - 1) +
-      CellExpectedMineCount(board, row + 0, col - 1);
-}
 }  // namespace
 
 Board::Board(const cv::Mat& cells) : cells_(cells) {
@@ -124,6 +106,20 @@ Board Board::FromString(const std::string& string) {
   return Board(cells);
 }
 
+std::vector<Cell> UnknownCells(const Board& board) {
+  std::vector<Cell> unknowns;
+  unknowns.reserve(board.rows() * board.cols());
+  for (int row = 0; row < board.rows(); ++row) {
+    for (int col = 0; col < board.cols(); ++col) {
+      Cell cell = board.at(row, col);
+      if (cell.IsUnknown()) {
+        unknowns.emplace_back(cell);
+      }
+    }
+  }
+  return unknowns;
+}
+
 // Algorithm:
 //
 // A cell is satisfied if its number matches the number of neighboring flags.
@@ -131,7 +127,7 @@ Board Board::FromString(const std::string& string) {
 // If the number of unknown neighbors plus the number of neighboring flags is
 // equal to the cell's number, the neighbors can be flagged.
 // If the cell is satisified, all unknown neighbors can be clicked.
-void Changes(
+void ComputeKnownNeighboringCellStates(
     const Board& board, std::unordered_set<Cell>* new_flags,
     std::unordered_set<Cell>* new_clicks) {
   for (int row = 0; row < board.rows(); ++row) {
@@ -149,38 +145,4 @@ void Changes(
       }
     }
   }
-}
-
-Cell ACellWithMostNeighboringMines(const Board& board) {
-  cv::Mat recounted(board.rows(), board.cols(), CV_8UC1);
-  for (int row = 0; row < board.rows(); ++row) {
-    for (int col = 0; col < board.cols(); ++col) {
-      Cell cell = board.at(row, col);
-      if (cell.IsNumber()) {
-        int unknown_count = 0, flag_count = 0;
-        CountNeighbors(board, row, col, &unknown_count, &flag_count);
-        recounted.at<uchar>(row, col) =
-            static_cast<uchar>(cell.value - flag_count);
-      } else {
-        recounted.at<uchar>(row, col) = cell.value;
-      }
-    }
-  }
-
-  int storedRow = -1;
-  int storedCol = -1;
-  int storedCount = 0;
-  for (int row = 0; row < board.rows(); ++row) {
-    for (int col = 0; col < board.cols(); ++col) {
-      if (board.at(row, col).IsUnknown()) {
-        int count = NeighboringExpectedMineCount(recounted, row, col);
-        if (count > storedCount) {
-          storedRow = row;
-          storedCol = col;
-          storedCount = count;
-        }
-      }
-    }
-  }
-  return Cell{storedRow, storedCol, CELL_UNKNOWN};
 }

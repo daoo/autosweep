@@ -1,5 +1,6 @@
 #include <iostream>
 #include <opencv4/opencv2/core.hpp>
+#include <random>
 #include <unordered_set>
 
 #include "autosweep/board.h"
@@ -24,7 +25,7 @@ void RightClick(
 bool ComputeAndClick(
     const Desktop& desktop, const BoardLocation& location, const Board& board) {
   std::unordered_set<Cell> new_flags, new_clicks;
-  Changes(board, &new_flags, &new_clicks);
+  ComputeKnownNeighboringCellStates(board, &new_flags, &new_clicks);
   if (new_flags.empty() && new_clicks.empty()) return false;
 
   for (auto iter = new_flags.cbegin(); iter != new_flags.cend(); ++iter)
@@ -53,6 +54,7 @@ int main() {
     }
   }
 
+  std::minstd_rand generator(20220402);
   while (true) {
     std::cout << "Taking screenshot of " << location.Board() << "\n";
     Board board = ParseBoard(desktop.Capture(location.Board()));
@@ -65,9 +67,10 @@ int main() {
       return 0;
     }
     if (!ComputeAndClick(desktop, location, board)) {
-      Cell cell = ACellWithMostNeighboringMines(board);
-      std::cout << "No 100% moves found, guessing.\n";
-      RightClick(desktop, location, cell);
+      std::cout << "No neighboring moves found, guessing.\n";
+      std::vector<Cell> unknowns = UnknownCells(board);
+      std::uniform_int_distribution<> distribution(0, unknowns.size() - 1);
+      LeftClick(desktop, location, unknowns[distribution(generator)]);
     }
   }
 }

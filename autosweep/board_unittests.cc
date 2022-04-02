@@ -33,14 +33,14 @@ TEST_CASE("FromString", "[Board]") {
   }
 }
 
-TEST_CASE("Changes", "[Board]") {
+TEST_CASE("ComputeKnownNeighboringCellStates", "[Board]") {
   SECTION("one unknown cell with neighboring ones, gives new flag") {
     Board board = Board::FromString(
         "-1\n"
         "10\n");
 
     std::unordered_set<Cell> new_flags, new_clicks;
-    Changes(board, &new_flags, &new_clicks);
+    ComputeKnownNeighboringCellStates(board, &new_flags, &new_clicks);
 
     REQUIRE(new_flags.size() == 1);
     REQUIRE(new_flags.cbegin()->row == 0);
@@ -58,23 +58,23 @@ TEST_CASE("Changes", "[Board]") {
         "------\n");
 
     std::unordered_set<Cell> new_flags, new_clicks;
-    Changes(board, &new_flags, &new_clicks);
+    ComputeKnownNeighboringCellStates(board, &new_flags, &new_clicks);
 
     REQUIRE(new_flags.empty());
     REQUIRE(new_clicks.empty());
   }
 }
 
-TEST_CASE("ACellWithMostNeighboringMines", "[Board]") {
+TEST_CASE("UnknownCells", "[Board]") {
   SECTION("example input, expected cell") {
     Board board = Board::FromString(
-        "--1\n"
-        "--2\n"
-        "12f\n");
+        "1m\n"
+        "--\n");
 
-    Cell cell = ACellWithMostNeighboringMines(board);
+    auto result = UnknownCells(board);
 
-    REQUIRE(cell.row == 1);
-    REQUIRE(cell.col == 1);
+    REQUIRE(result.size() == 2);
+    REQUIRE(result[0] == Cell{1, 0, CELL_UNKNOWN});
+    REQUIRE(result[1] == Cell{1, 1, CELL_UNKNOWN});
   }
 }

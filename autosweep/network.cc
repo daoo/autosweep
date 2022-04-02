@@ -31,7 +31,6 @@ cv::Mat CostDerivative(const cv::Mat& activation, const cv::Mat& y) {
 }  // namespace
 
 Network::Network(const std::vector<size_t>& sizes) {
-  std::random_device device;
   std::minstd_rand generator(20220116);
   std::uniform_real_distribution<> distribution(0.0, 1.0);
 
