@@ -218,6 +218,21 @@ cv::Point2i BoardLocation::CellCenter(size_t row, size_t col) const {
       offset + board_.x + BOARD_PIXEL_X_PADDING + col * BOARD_PIXEL_CELL_SIDE;
   int y = offset + board_.y + BOARD_PIXEL_Y_TOP_PADDING +
       row * BOARD_PIXEL_CELL_SIDE;
+
+  if (x >= board_.br().x || y >= board_.br().y) {
+    auto cell_index_str = std::to_string(row) + " x " + std::to_string(col);
+    auto pixel_coordinate_str =
+        "(" + std::to_string(x) + ", " + std::to_string(y) + ")";
+    auto board_top_left_str = "(" + std::to_string(board_.tl().x) + ", " +
+        std::to_string(board_.tl().y) + ")";
+    auto board_bottom_right_str = "(" + std::to_string(board_.br().x) + ", " +
+        std::to_string(board_.br().y) + ")";
+    auto board_str =
+        "[" + board_top_left_str + ", " + board_bottom_right_str + "]";
+    throw std::runtime_error(
+        "Cell " + cell_index_str + " at pixel " + pixel_coordinate_str +
+        " is outside of board region " + board_str + ".");
+  }
   return {x, y};
 }
 
