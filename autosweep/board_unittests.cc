@@ -66,15 +66,27 @@ TEST_CASE("ComputeKnownNeighboringCellStates", "[Board]") {
 }
 
 TEST_CASE("UnknownCells", "[Board]") {
-  SECTION("example input, expected cell") {
-    Board board = Board::FromString(
-        "1m\n"
-        "--\n");
+  Board board = Board::FromString(
+      "1m\n"
+      "--\n");
 
-    auto result = UnknownCells(board);
+  auto result = UnknownCells(board);
 
-    REQUIRE(result.size() == 2);
-    REQUIRE(result[0] == Cell{1, 0, CELL_UNKNOWN});
-    REQUIRE(result[1] == Cell{1, 1, CELL_UNKNOWN});
-  }
+  REQUIRE(result.size() == 2);
+  REQUIRE(result[0] == Cell{1, 0, CELL_UNKNOWN});
+  REQUIRE(result[1] == Cell{1, 1, CELL_UNKNOWN});
+}
+
+TEST_CASE("UnknownCellMask", "[Board]") {
+  Board board = Board::FromString(
+      "1m\n"
+      "--\n");
+
+  auto result = UnknownCellMask(board);
+
+  REQUIRE(result.size() == cv::Size2i{2, 2});
+  REQUIRE(result.at<uint8_t>(0, 0) == 0);
+  REQUIRE(result.at<uint8_t>(0, 1) == 0);
+  REQUIRE(result.at<uint8_t>(1, 0) == 1);
+  REQUIRE(result.at<uint8_t>(1, 1) == 1);
 }

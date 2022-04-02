@@ -39,11 +39,14 @@ void Inner(
 
     cv::Mat input = GenerateInputLayer(board);
     cv::Mat result = ReshapeResult(board, network.FeedForward(input));
-    double maxVal;
-    cv::Point maxLoc;
-    cv::minMaxLoc(result, nullptr, &maxVal, nullptr, &maxLoc);
-    std::cout << "Expected mine at " << maxLoc << " (" << maxVal << ")\n";
-    LeftClick(desktop, location, board.at(maxLoc.x, maxLoc.y));
+
+    double minVal;
+    cv::Point minLoc;
+    cv::minMaxLoc(
+        result, &minVal, nullptr, &minLoc, nullptr, UnknownCellMask(board));
+    Cell lowestRiskCell = board.at(minLoc.y, minLoc.x);
+    std::cout << "Lowest risk of mine at " << minLoc << " (" << minVal << ")\n";
+    LeftClick(desktop, location, lowestRiskCell);
 
     Board board2 = ParseBoard(desktop.Capture(location.Board()));
 

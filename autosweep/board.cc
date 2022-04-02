@@ -122,6 +122,17 @@ std::vector<Cell> UnknownCells(const Board& board) {
   return unknowns;
 }
 
+cv::Mat UnknownCellMask(const Board& board) {
+  cv::Mat mat(board.rows(), board.cols(), CV_8UC1);
+  for (size_t row = 0; row < board.rows(); ++row) {
+    for (size_t col = 0; col < board.cols(); ++col) {
+      Cell cell = board.at(row, col);
+      mat.at<uint8_t>(row, col) = cell.IsUnknown() ? 1 : 0;
+    }
+  }
+  return mat;
+}
+
 // Algorithm:
 //
 // A cell is satisfied if its number matches the number of neighboring flags.

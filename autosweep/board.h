@@ -31,6 +31,7 @@ class Board {
 };
 
 std::vector<Cell> UnknownCells(const Board& board);
+cv::Mat UnknownCellMask(const Board& board);
 
 void ComputeKnownNeighboringCellStates(
     const Board& board, std::unordered_set<Cell>* new_flags,
