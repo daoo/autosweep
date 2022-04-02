@@ -30,3 +30,16 @@ TEST_CASE("GenerateOutputLayer", "[Neural]") {
   REQUIRE(result.at<double>(2, 0) == Approx(0.0));
   REQUIRE(result.at<double>(3, 0) == Approx(0.0));
 }
+
+TEST_CASE("ReshapeResult", "[Neural]") {
+  Board board = Board::FromString(
+      "m1\n"
+      "10\n");
+  cv::Mat output = GenerateOutputLayer(board);
+
+  auto result = ReshapeResult(board, output);
+
+  REQUIRE(result.rows == 2);
+  REQUIRE(result.cols == 2);
+  REQUIRE(result.size() == cv::Size2i{2, 2});
+}
