@@ -17,12 +17,30 @@ TEST_CASE("Network::Network", "[Neural]") {
 }
 
 TEST_CASE("Network::FeedForward", "[Neural]") {
-  Network network({2, 3, 1});
-  cv::Mat input({0.0, 1.0});
+  SECTION("2 layers with 1 neuron") {
+    Network network({1, 1});
+    cv::Mat input({1.0});
 
-  cv::Mat result = network.FeedForward(input);
+    cv::Mat result = network.FeedForward(input);
 
-  REQUIRE(result.size() == cv::Size2i{1, 1});
+    REQUIRE(result.size() == cv::Size2i{1, 1});
+  }
+  SECTION("3 layers with different neuron counts") {
+    Network network({2, 3, 1});
+    cv::Mat input({0.0, 1.0});
+
+    cv::Mat result = network.FeedForward(input);
+
+    REQUIRE(result.size() == cv::Size2i{1, 1});
+  }
+  SECTION("5 layers with different neuron counts") {
+    Network network({6, 10, 3, 8, 2});
+    cv::Mat input({0.0, 0.2, 0.4, 0.6, 0.8, 1.0});
+
+    cv::Mat result = network.FeedForward(input);
+
+    REQUIRE(result.size() == cv::Size2i{1, 2});
+  }
 }
 
 TEST_CASE("Network::BackPropagate", "[Neural]") {
