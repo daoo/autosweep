@@ -81,7 +81,7 @@ Network::Nabla Network::BackPropagate(
   at(nabla_b, -1) = delta;
   at(nabla_w, -1) = delta * at(activations, -2).t();
   for (size_t i = 2; i < biases_.size(); ++i) {
-    delta = weights_[i + 1].t() * delta * SigmoidPrime(zs[i]);
+    delta = (at(weights_, -i + 1).t() * delta).mul(SigmoidPrime(at(zs, -i)));
     at(nabla_b, -i) = delta;
     at(nabla_w, -i) = delta * at(activations, -i - 1).t();
   }

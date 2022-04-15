@@ -44,18 +44,37 @@ TEST_CASE("Network::FeedForward", "[Neural]") {
 }
 
 TEST_CASE("Network::BackPropagate", "[Neural]") {
-  Network network({2, 3, 1});
-  cv::Mat input({0.0, 1.0});
-  cv::Mat output({1.0});
+  SECTION("3 layers with different neuron count") {
+    Network network({2, 3, 1});
+    cv::Mat input({0.0, 1.0});
+    cv::Mat output({1.0});
 
-  auto result = network.BackPropagate(input, output);
+    auto result = network.BackPropagate(input, output);
 
-  REQUIRE(result.b.size() == 2);
-  REQUIRE(result.b[0].size() == cv::Size2i{1, 3});
-  REQUIRE(result.b[1].size() == cv::Size2i{1, 1});
-  REQUIRE(result.w.size() == 2);
-  REQUIRE(result.w[0].size() == cv::Size2i{2, 3});
-  REQUIRE(result.w[1].size() == cv::Size2i{3, 1});
+    REQUIRE(result.b.size() == 2);
+    REQUIRE(result.b[0].size() == cv::Size2i{1, 3});
+    REQUIRE(result.b[1].size() == cv::Size2i{1, 1});
+    REQUIRE(result.w.size() == 2);
+    REQUIRE(result.w[0].size() == cv::Size2i{2, 3});
+    REQUIRE(result.w[1].size() == cv::Size2i{3, 1});
+  }
+
+  SECTION("4 layers with equal neuron count") {
+    Network network({2, 2, 2, 2});
+    cv::Mat input({0.0, 1.0});
+    cv::Mat output({0.0, 1.0});
+
+    auto result = network.BackPropagate(input, output);
+
+    REQUIRE(result.b.size() == 3);
+    REQUIRE(result.b[0].size() == cv::Size2i{1, 2});
+    REQUIRE(result.b[1].size() == cv::Size2i{1, 2});
+    REQUIRE(result.b[2].size() == cv::Size2i{1, 2});
+    REQUIRE(result.w.size() == 3);
+    REQUIRE(result.w[0].size() == cv::Size2i{2, 2});
+    REQUIRE(result.w[1].size() == cv::Size2i{2, 2});
+    REQUIRE(result.w[2].size() == cv::Size2i{2, 2});
+  }
 }
 
 TEST_CASE("Network::Update", "[Neural]") {
@@ -115,5 +134,34 @@ TEST_CASE("Network::Update", "[Neural]") {
     cv::Mat result = network.FeedForward(input);
     REQUIRE(result.at<double>(0) <= 0.05);
     REQUIRE(result.at<double>(1) >= 0.95);
+  }
+
+  SECTION("4 layers with equal neuron count") {
+    Network network({2, 2, 2, 2});
+    cv::Mat input({0.0, 1.0});
+    cv::Mat output({0.0, 1.0});
+    double eta = 10.0;
+
+    for (int i = 0; i < 10; ++i) {
+      network.Update(network.BackPropagate(input, output), eta);
+    }
+
+    cv::Mat result = network.FeedForward(input);
+    REQUIRE(result.at<double>(0) <= 0.1);
+    REQUIRE(result.at<double>(1) >= 0.9);
+  }
+
+  SECTION("10 layers with different neuron count") {
+    Network network({6, 10, 2, 8, 4, 20, 7, 10, 5, 1});
+    cv::Mat input({0.0, 0.2, 0.4, 0.6, 0.8, 1.0});
+    cv::Mat output({0.5});
+    double eta = 3.0;
+
+    for (int i = 0; i < 10; ++i) {
+      network.Update(network.BackPropagate(input, output), eta);
+    }
+
+    cv::Mat result = network.FeedForward(input);
+    REQUIRE(result.at<double>(0) == Approx(0.5));
   }
 }
