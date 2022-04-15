@@ -7,7 +7,7 @@ class BoardLocation {
  public:
   static BoardLocation Find(const cv::Mat& image);
 
-  cv::Point2i CellCenter(size_t row, size_t col) const;
+  cv::Point2i CellCenter(int row, int col) const;
   cv::Point2i SmileyCenter() const;
 
   const cv::Rect& Board() const { return board_; }

@@ -212,14 +212,16 @@ BoardLocation BoardLocation::Find(const cv::Mat& screenshot) {
   return BoardLocation(board_location, smiley_location);
 }
 
-cv::Point2i BoardLocation::CellCenter(size_t row, size_t col) const {
+cv::Point2i BoardLocation::CellCenter(int row, int col) const {
   int offset = BOARD_PIXEL_CELL_SIDE / 2;
   int x =
       offset + board_.x + BOARD_PIXEL_X_PADDING + col * BOARD_PIXEL_CELL_SIDE;
   int y = offset + board_.y + BOARD_PIXEL_Y_TOP_PADDING +
       row * BOARD_PIXEL_CELL_SIDE;
 
-  if (x >= board_.br().x || y >= board_.br().y) {
+  bool badX = x <= board_.tl().x || x >= board_.br().x;
+  bool badY = y <= board_.tl().y || y >= board_.br().y;
+  if (badX || badY) {
     auto cell_index_str = std::to_string(row) + " x " + std::to_string(col);
     auto pixel_coordinate_str =
         "(" + std::to_string(x) + ", " + std::to_string(y) + ")";
