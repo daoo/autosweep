@@ -63,7 +63,7 @@ int main() {
       return 0;
     }
     if (board.IsLost()) {
-      std::cout << "Lost!\n";
+      std::cout << "Lost!\n" << board;
       return 0;
     }
     if (!ComputeAndClick(desktop, location, board)) {
