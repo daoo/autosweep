@@ -1,4 +1,6 @@
-#include "autosweep/stream.h"
+#include "autosweep/board.h"
+#include "autosweep/boardstream.h"
+#include "autosweep/cell.h"
 
 std::ostream& operator<<(std::ostream& stream, const Cell& cell) {
   stream << cell.ToChar();

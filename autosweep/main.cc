@@ -4,9 +4,9 @@
 #include <unordered_set>
 
 #include "autosweep/board.h"
+#include "autosweep/boardstream.h"
 #include "autosweep/desktop.h"
 #include "autosweep/detector.h"
-#include "autosweep/stream.h"
 
 namespace {
 

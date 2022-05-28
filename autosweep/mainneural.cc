@@ -2,11 +2,11 @@
 #include <opencv4/opencv2/core.hpp>
 
 #include "autosweep/board.h"
+#include "autosweep/boardstream.h"
 #include "autosweep/desktop.h"
 #include "autosweep/detector.h"
 #include "autosweep/network.h"
 #include "autosweep/neuralboard.h"
-#include "autosweep/stream.h"
 
 namespace {
 

@@ -1,12 +1,12 @@
-#ifndef AUTOSWEEP_STREAM_H_
-#define AUTOSWEEP_STREAM_H_
+#ifndef AUTOSWEEP_BOARDSTREAM_H_
+#define AUTOSWEEP_BOARDSTREAM_H_
 
 #include <ostream>
 
-#include "autosweep/board.h"
-#include "autosweep/cell.h"
+struct Cell;
+class Board;
 
 std::ostream& operator<<(std::ostream& stream, const Cell& cell);
 std::ostream& operator<<(std::ostream& stream, const Board& board);
 
-#endif  // AUTOSWEEP_STREAM_H_
+#endif  // AUTOSWEEP_BOARDSTREAM_H_
