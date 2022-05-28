@@ -16,12 +16,6 @@ void LeftClick(
   desktop.LeftClick(location.CellCenter(cell.row, cell.col));
 }
 
-void RightClick(
-    const Desktop& desktop, const BoardLocation& location, Cell cell) {
-  std::cout << "RightClick(" << cell.row << ", " << cell.col << ")\n";
-  desktop.RightClick(location.CellCenter(cell.row, cell.col));
-}
-
 void Inner(
     const Desktop& desktop, const BoardLocation& location, Network& network,
     double eta) {
@@ -63,6 +57,7 @@ int main() {
   cv::Mat initial_screenshot = desktop.Capture(display_rectangle);
   BoardLocation location = BoardLocation::Find(initial_screenshot);
 
+  // TODO: Count cells without parsing
   Board board = ParseBoard(initial_screenshot(location.Board()));
   size_t cells = board.rows() * board.cols();
   Network network({cells, cells, cells});
