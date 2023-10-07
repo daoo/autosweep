@@ -7,12 +7,11 @@ TEST_CASE("FromString", "[Board]") {
     std::string string(
         "0123\n"
         "4567\n"
-        "89fm\n"
-        "----\n");
+        "8fm-\n");
 
     Board board = Board::FromString(string);
 
-    REQUIRE(board.rows() == 4);
+    REQUIRE(board.rows() == 3);
     REQUIRE(board.cols() == 4);
     REQUIRE(board.at(0, 0).value == CELL_0);
     REQUIRE(board.at(0, 1).value == CELL_1);
@@ -23,13 +22,9 @@ TEST_CASE("FromString", "[Board]") {
     REQUIRE(board.at(1, 2).value == CELL_6);
     REQUIRE(board.at(1, 3).value == CELL_7);
     REQUIRE(board.at(2, 0).value == CELL_8);
-    REQUIRE(board.at(2, 1).value == CELL_9);
-    REQUIRE(board.at(2, 2).value == CELL_FLAG);
-    REQUIRE(board.at(2, 3).value == CELL_MINE);
-    REQUIRE(board.at(3, 0).value == CELL_UNKNOWN);
-    REQUIRE(board.at(3, 1).value == CELL_UNKNOWN);
-    REQUIRE(board.at(3, 2).value == CELL_UNKNOWN);
-    REQUIRE(board.at(3, 3).value == CELL_UNKNOWN);
+    REQUIRE(board.at(2, 1).value == CELL_FLAG);
+    REQUIRE(board.at(2, 2).value == CELL_MINE);
+    REQUIRE(board.at(2, 3).value == CELL_UNKNOWN);
   }
 }
 

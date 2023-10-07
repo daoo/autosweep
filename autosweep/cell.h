@@ -14,7 +14,6 @@ enum CellValue : uint8_t {
   CELL_6,
   CELL_7,
   CELL_8,
-  CELL_9,
   CELL_UNKNOWN,
   CELL_MINE,
   CELL_FLAG
@@ -29,7 +28,7 @@ struct Cell {
   bool IsKnown() const { return !IsUnknown(); }
   bool IsMine() const { return value == CELL_MINE; }
   bool IsZero() const { return value == 0; }
-  bool IsNumber() const { return value >= 1 && value <= 9; }
+  bool IsNumber() const { return value >= 1 && value <= 8; }
 
   static std::optional<CellValue> FromChar(char character) {
     switch (character) {
@@ -51,8 +50,6 @@ struct Cell {
         return CELL_7;
       case '8':
         return CELL_8;
-      case '9':
-        return CELL_9;
       case '-':
         return CELL_UNKNOWN;
       case 'f':
@@ -84,8 +81,6 @@ struct Cell {
         return '7';
       case 8:
         return '8';
-      case 9:
-        return '9';
       case CELL_UNKNOWN:
         return '-';
       case CELL_FLAG:
