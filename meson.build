@@ -6,7 +6,7 @@ project(
 
 catch2 = dependency('catch2')
 opencv = dependency('opencv4')
-x11 = dependency('X11')
+x11 = dependency('x11')
 
 libautosweep = static_library(
     'autosweep',
