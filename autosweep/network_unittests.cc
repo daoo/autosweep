@@ -7,13 +7,13 @@
 TEST_CASE("Network::Network", "[Neural]") {
   Network network({2, 3, 1});
 
-  REQUIRE(network.biases().size() == 2);
-  REQUIRE(network.biases().at(0).size() == cv::Size2i{1, 3});
-  REQUIRE(network.biases().at(1).size() == cv::Size2i{1, 1});
+  REQUIRE(network.layers().size() == 2);
 
-  REQUIRE(network.weights().size() == 2);
-  REQUIRE(network.weights().at(0).size() == cv::Size2i{2, 3});
-  REQUIRE(network.weights().at(1).size() == cv::Size2i{3, 1});
+  REQUIRE(network.layers().at(0).biases.size() == cv::Size2i{1, 3});
+  REQUIRE(network.layers().at(1).biases.size() == cv::Size2i{1, 1});
+
+  REQUIRE(network.layers().at(0).weights.size() == cv::Size2i{2, 3});
+  REQUIRE(network.layers().at(1).weights.size() == cv::Size2i{3, 1});
 }
 
 TEST_CASE("Network::FeedForward", "[Neural]") {
